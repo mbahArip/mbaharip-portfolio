@@ -2,26 +2,131 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer base {
+  body {
+    @apply m-0 box-border p-0;
+    @apply bg-black text-white;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+  h1 {
+    @apply text-5xl font-extrabold leading-loose tracking-wide;
+  }
+  h2 {
+    @apply text-4xl font-bold leading-relaxed tracking-wide;
+  }
+  h3 {
+    @apply text-3xl font-bold leading-relaxed tracking-normal;
+  }
+  h4 {
+    @apply text-2xl font-bold leading-normal tracking-normal;
+  }
+  h5 {
+    @apply text-xl font-bold leading-normal tracking-normal;
+  }
+  h6 {
+    @apply text-lg font-bold leading-snug tracking-normal;
+  }
+
+  strong,
+  b {
+    @apply mx-1 font-bold tracking-wide;
+  }
+  em {
+    @apply mx-1 italic tracking-wide;
+  }
+  u {
+    @apply mx-1 underline decoration-white/50 decoration-2 underline-offset-2;
+  }
+  p {
+    @apply whitespace-pre-wrap align-top;
+    @apply my-2 text-start leading-relaxed;
+  }
+  span {
+    @apply m-0 text-justify leading-relaxed;
+  }
+
+  blockquote {
+    @apply my-2 w-full text-justify leading-relaxed;
+    @apply rounded border-l-4 border-orange-500 bg-zinc-900 px-4;
+  }
+  figure > img {
+    @apply rounded-lg border border-zinc-700;
+  }
+  hr {
+    @apply my-4 w-full border-0 border-t-2 border-zinc-700;
+  }
+
+  a {
+    @apply whitespace-pre-wrap break-words;
+    overflow-wrap: break-word;
+  }
+  a[target='_blank'] {
+    @apply mx-auto;
+  }
+  a:not(:has(*)) {
+    @apply text-blue-400 visited:text-orange-400 hover:text-blue-500 visited:hover:text-orange-500;
+    @apply transition-all transition-smooth;
+  }
+  a[target='_blank']::after {
+    content: '↗';
+    @apply text-xs text-zinc-300;
+    @apply ml-0.5;
+    @apply no-underline visited:no-underline !important;
+  }
+
+  ol {
+    @apply list-inside list-disc;
+  }
+  ol > li {
+    @apply ml-2;
+  }
+
+  button {
+    @apply bg-orange-500 hover:bg-orange-600 active:bg-orange-700;
+    @apply text-white hover:text-white active:text-white;
+    @apply border-2 border-orange-500 hover:border-orange-600 active:border-orange-700;
+    @apply w-full rounded-md;
+    @apply px-4 py-2;
+    @apply my-4;
+    @apply transition-all transition-smooth;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer components {
+  .animate-underline {
+    --delay: 0ms;
+    @apply relative max-w-fit underline decoration-transparent decoration-2 underline-offset-4;
+    animation-name: animate-underline;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: var(--delay);
+  }
+  @keyframes animate-underline {
+    0% {
+      text-underline-offset: 6px;
+      text-decoration-color: transparent;
+    }
+    100% {
+      text-underline-offset: 2px;
+      text-decoration-color: white;
+    }
+  }
+
+  span.badge {
+    @apply inline-block px-1 text-xs;
+    @apply rounded;
+    @apply bg-zinc-900 text-zinc-300;
+  }
+
+  img.thumbnail {
+    @apply border border-zinc-800;
+  }
+
+  button.sm {
+    @apply px-2 py-1;
+  }
+  button.lg {
+    @apply px-6 py-3;
+  }
 }
