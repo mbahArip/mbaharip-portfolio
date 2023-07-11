@@ -64,7 +64,7 @@ export default function Home({ user, blogs, works, socials, data }: Props) {
               href={'https://sttbandung.ac.id/'}
               target='_blank'
             >
-              Sekolah Tinggi Tekonologi Bandung
+              Sekolah Tinggi Teknologi Bandung
             </Link>{' '}
             pursuing a Bachelor&apos;s degree in Computer Science.
           </p>

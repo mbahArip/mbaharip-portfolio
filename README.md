@@ -1,8 +1,6 @@
 # mbaharip Portfolio
 
-```md
-Hello! I'm Arief Rachmawan, a Developer from Bandung, Indonesia. I'm currently a student at Sekolah Tinggi Tekonologi Bandung pursuing a Bachelor's degree in Computer Science.
-```
+Hello! I'm **Arief Rachmawan**, a **Developer** from **Bandung, Indonesia**. I'm currently a student at **Sekolah Tinggi Teknologi Bandung** pursuing a Bachelor's degree in Computer Science.
 
 ## Description
 
