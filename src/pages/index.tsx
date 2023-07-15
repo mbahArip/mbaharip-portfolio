@@ -62,7 +62,23 @@ export default function Home({ user, blogs, works, socials }: Props) {
   const settings = useSettings();
   return (
     <>
-      <NextSeo title='Home' />
+      <NextSeo
+        title='Home'
+        additionalMetaTags={[
+          {
+            name: 'twitter:title',
+            content: 'Home | mbahArip',
+          },
+          {
+            name: 'twitter:description',
+            content: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+          },
+          {
+            name: 'twitter:image',
+            content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
+          },
+        ]}
+      />
       <section id='profile'>
         <div className='w-full flex items-center justify-center flex-col relative mb-10 md:mb-14'>
           <img

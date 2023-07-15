@@ -31,14 +31,14 @@ export default function App({ Component, pageProps }: AppProps) {
   const defaultSeo: DefaultSeoProps = {
     titleTemplate: '%s | mbahArip',
     defaultTitle: 'mbahArip',
-    description: `Hello, I'm Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+    description: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
     canonical: process.env.NEXT_PUBLIC_SITE_URL,
     themeColor: '#000000',
     openGraph: {
       url: process.env.NEXT_PUBLIC_SITE_URL,
       title: 'mbahArip',
       type: 'website',
-      description: `Hello, I'm Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+      description: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
       images: [
         {
           url: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
@@ -53,6 +53,20 @@ export default function App({ Component, pageProps }: AppProps) {
       handle: '@mbahArip_',
       site: '@mbahArip_',
     },
+    additionalMetaTags: [
+      {
+        name: 'twitter:title',
+        content: 'mbahArip',
+      },
+      {
+        name: 'twitter:description',
+        content: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+      },
+      {
+        name: 'twitter:image',
+        content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
+      },
+    ],
   };
 
   const router = useRouter();

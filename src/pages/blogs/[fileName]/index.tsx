@@ -48,6 +48,20 @@ export default function PageBlog({ blog, toc, nextPost, prevPost }: Props) {
             authors: ['Arief Rachmawan'],
           },
         }}
+        additionalMetaTags={[
+          {
+            name: 'twitter:title',
+            content: `${blog.metadata.title} | mbahArip`,
+          },
+          {
+            name: 'twitter:description',
+            content: blog.metadata.summary,
+          },
+          {
+            name: 'twitter:image',
+            content: `${process.env.NEXT_PUBLIC_SITE_URL}${blog.metadata.thumbnail}`,
+          },
+        ]}
       />
       <article>
         <PostHeader post={blog} />

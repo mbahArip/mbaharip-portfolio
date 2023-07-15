@@ -83,7 +83,23 @@ export default function PageWorks({ works: ssrWorks, query }: Props) {
 
   return (
     <>
-      <NextSeo title='Works / Projects' />
+      <NextSeo
+        title='Works / Projects'
+        additionalMetaTags={[
+          {
+            name: 'twitter:title',
+            content: 'Works / Projects | mbahArip',
+          },
+          {
+            name: 'twitter:description',
+            content: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+          },
+          {
+            name: 'twitter:image',
+            content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
+          },
+        ]}
+      />
       <section
         id='header'
         className='relative mx-auto w-full'

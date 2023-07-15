@@ -83,7 +83,23 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
 
   return (
     <>
-      <NextSeo title='Blogs' />
+      <NextSeo
+        title='Blogs'
+        additionalMetaTags={[
+          {
+            name: 'twitter:title',
+            content: 'Blogs | mbahArip',
+          },
+          {
+            name: 'twitter:description',
+            content: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+          },
+          {
+            name: 'twitter:image',
+            content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
+          },
+        ]}
+      />
       <section
         id='header'
         className='relative mx-auto w-full'

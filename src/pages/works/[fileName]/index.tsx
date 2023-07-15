@@ -48,6 +48,20 @@ export default function PageWork({ work, toc, nextPost, prevPost }: Props) {
             authors: ['Arief Rachmawan'],
           },
         }}
+        additionalMetaTags={[
+          {
+            name: 'twitter:title',
+            content: `${work.metadata.title} | mbahArip`,
+          },
+          {
+            name: 'twitter:description',
+            content: work.metadata.summary,
+          },
+          {
+            name: 'twitter:image',
+            content: `${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.thumbnail}`,
+          },
+        ]}
       />
       <article>
         <PostHeader post={work} />
