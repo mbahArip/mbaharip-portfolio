@@ -53,6 +53,9 @@ export default function App({ Component, pageProps }: AppProps) {
       handle: '@mbahArip_',
       site: '@mbahArip_',
     },
+    facebook: {
+      appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID as string,
+    },
     additionalMetaTags: [
       {
         name: 'twitter:title',

@@ -82,7 +82,7 @@ export default function Home({ user, blogs, works, socials }: Props) {
       <section id='profile'>
         <div className='w-full flex items-center justify-center flex-col relative mb-10 md:mb-14'>
           <img
-            src='https://cdn.discordapp.com/attachments/256771512445566976/1127608431973519440/image.png'
+            src='/img/banner.webp'
             alt='profileBanner'
             loading='lazy'
             className='w-full h-32 md:h-64 object-cover object-center rounded-xl'

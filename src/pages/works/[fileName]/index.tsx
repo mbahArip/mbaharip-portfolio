@@ -1,7 +1,7 @@
 import Giscus from '@giscus/react';
 import matter from 'gray-matter';
 import { GetStaticPropsContext } from 'next';
-import { NextSeo } from 'next-seo';
+import { ArticleJsonLd, NextSeo } from 'next-seo';
 import Link from 'next/link';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
 
@@ -62,6 +62,18 @@ export default function PageWork({ work, toc, nextPost, prevPost }: Props) {
             content: `${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.thumbnail}`,
           },
         ]}
+      />
+      <ArticleJsonLd
+        type='BlogPosting'
+        url={`${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.path}`}
+        title={work.metadata.title}
+        images={[
+          `${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.thumbnail}`,
+        ]}
+        datePublished={new Date(work.metadata.createdAt).toISOString()}
+        dateModified={new Date(work.metadata.updatedAt).toISOString()}
+        authorName={['Arief Rachmawan']}
+        description={work.metadata.summary}
       />
       <article>
         <PostHeader post={work} />
