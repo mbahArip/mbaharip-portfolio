@@ -62,6 +62,7 @@ export default function PageBlog({ blog, toc, nextPost, prevPost }: Props) {
             content: `${process.env.NEXT_PUBLIC_SITE_URL}${blog.metadata.thumbnail}`,
           },
         ]}
+        key={`seo-blogs-${blog.metadata.path}`}
       />
       <ArticleJsonLd
         type='BlogPosting'

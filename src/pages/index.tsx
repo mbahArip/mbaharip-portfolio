@@ -78,6 +78,7 @@ export default function Home({ user, blogs, works, socials }: Props) {
             content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
           },
         ]}
+        key={'seo-home'}
       />
       <section id='profile'>
         <div className='w-full flex items-center justify-center flex-col relative mb-10 md:mb-14'>

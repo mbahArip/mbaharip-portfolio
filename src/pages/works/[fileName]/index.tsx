@@ -62,6 +62,7 @@ export default function PageWork({ work, toc, nextPost, prevPost }: Props) {
             content: `${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.thumbnail}`,
           },
         ]}
+        key={`seo-works-${work.metadata.path}`}
       />
       <ArticleJsonLd
         type='BlogPosting'

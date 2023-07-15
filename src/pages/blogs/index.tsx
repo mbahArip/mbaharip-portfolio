@@ -99,6 +99,7 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
             content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
           },
         ]}
+        key={'seo-blogs'}
       />
       <section
         id='header'

@@ -116,7 +116,10 @@ export default function App({ Component, pageProps }: AppProps) {
       id='wrapper'
       className={`w-full min-h-screen flex flex-col items-center justify-between relative ${inter.variable} ${quicksand.variable} ${jetbrainsMono.variable}`}
     >
-      <DefaultSeo {...defaultSeo} />
+      <DefaultSeo
+        {...defaultSeo}
+        key={`defaultSEO-${router.asPath}`}
+      />
       <Navbar />
       <AnimatePresence
         mode='wait'
@@ -132,7 +135,7 @@ export default function App({ Component, pageProps }: AppProps) {
           ) : (
             <main
               id='main'
-              className='flex-1 max-w-screen-lg w-full mx-auto py-2 px-4 md:px-2 my-4'
+              className='flex-1 flex flex-col max-w-screen-lg w-full mx-auto py-2 px-4 md:px-2 my-4'
               key={router.asPath}
             >
               <Component {...pageProps} />

@@ -99,6 +99,7 @@ export default function PageWorks({ works: ssrWorks, query }: Props) {
             content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
           },
         ]}
+        key={'seo-works'}
       />
       <section
         id='header'
