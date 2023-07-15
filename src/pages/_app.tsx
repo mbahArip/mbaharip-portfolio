@@ -41,7 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
       description: `Hello, I'm Arief Rachmawan, a developer based in Bandung, Indonesia.`,
       images: [
         {
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.png`,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
           width: 1200,
           height: 630,
         },
