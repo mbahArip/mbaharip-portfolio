@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { App, Octokit } from 'octokit';
 
 import octokit from 'utils/octokit';
 
@@ -7,6 +6,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (
+    process.env.NODE_ENV === 'production' ||
+    process.env.NODE_ENV === 'test'
+  ) {
+    return res.status(404).json({ statusCode: 404, message: 'Not Found' });
+  }
+
   try {
     const { data } = await octokit.rest.rateLimit.get();
 

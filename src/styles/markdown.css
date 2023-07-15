@@ -1,0 +1,78 @@
+@tailwind components;
+
+@layer components {
+  .markdown {
+    @apply bg-inherit leading-normal text-inherit;
+  }
+  .markdown p {
+    @apply break-words leading-loose;
+  }
+
+  .markdown h1,
+  .markdown h2,
+  .markdown h3 {
+    @apply my-4 border-b-2 border-b-zinc-500 first-letter:capitalize;
+  }
+
+  .markdown code:not(pre code) {
+    @apply rounded bg-zinc-700 px-1 leading-normal text-white;
+  }
+
+  .markdown code,
+  .markdown code span {
+    @apply font-mono text-sm;
+  }
+
+  .markdown ul {
+    @apply list-disc leading-normal;
+  }
+
+  .markdown ol {
+    @apply list-decimal leading-normal;
+  }
+
+  .markdown li {
+    @apply ml-8;
+  }
+  .markdown li p {
+    @apply my-1 leading-snug;
+  }
+
+  .markdown table {
+    @apply mx-auto mb-4 block w-full border-collapse overflow-auto;
+  }
+  .markdown th {
+    @apply px-4 text-center font-heading text-lg font-bold md:px-8;
+    @apply border-b-2 border-zinc-500;
+  }
+  .markdown td {
+    @apply px-4 py-2 text-center font-heading md:px-8;
+  }
+  .markdown tr {
+    @apply border-b border-zinc-500 last-of-type:border-b-0;
+  }
+  .markdown tr:nth-child(even) td {
+    @apply bg-zinc-900;
+  }
+  .markdown tr:nth-child(odd) td {
+    @apply bg-zinc-800;
+  }
+
+  .markdown ul.contains-task-list {
+    @apply list-none;
+  }
+
+  .markdown ul.contains-task-list li {
+    @apply ml-1 flex items-center;
+  }
+
+  .markdown input[type='checkbox'] {
+    @apply mr-2 aspect-square h-4 w-4 p-2;
+    @apply appearance-none border border-zinc-500;
+    @apply disabled:bg-zinc-200 disabled:checked:bg-blue-500 dark:disabled:bg-zinc-700 dark:disabled:checked:bg-blue-400;
+  }
+
+  .markdown hr {
+    @apply my-4 border-b-2 border-t-0 border-b-zinc-400 dark:border-b-zinc-700;
+  }
+}

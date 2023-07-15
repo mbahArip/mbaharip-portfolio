@@ -1,21 +1,85 @@
-import { AnimatePresence, HTMLMotionProps } from 'framer-motion';
-import { motion as m } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { DefaultSeo, DefaultSeoProps } from 'next-seo';
 import type { AppProps } from 'next/app';
-import { Exo_2 } from 'next/font/google';
+import { Inter, JetBrains_Mono, Quicksand } from 'next/font/google';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
-import { Provider } from 'react-wrap-balancer';
+import { useEffect, useState } from 'react';
 
 import Footer from 'components/Footer';
+import Loading from 'components/Loading';
 import Navbar from 'components/Navbar';
 
-import 'styles/globals.css';
+import { SettingsProvider } from 'contexts/settings';
 
-const exo2 = Exo_2({ subsets: ['latin'] });
+import { Settings } from 'types/api';
+
+import 'styles/globals.css';
+import 'styles/highlight.css';
+import 'styles/markdown.css';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const quicksand = Quicksand({
+  subsets: ['latin'],
+  variable: '--font-quicksand',
+});
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+});
 
 export default function App({ Component, pageProps }: AppProps) {
+  const defaultSeo: DefaultSeoProps = {
+    titleTemplate: '%s | mbahArip',
+    defaultTitle: 'mbahArip',
+    description: `Hello, I'm Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+    canonical: process.env.NEXT_PUBLIC_SITE_URL,
+    themeColor: '#000000',
+    openGraph: {
+      url: process.env.NEXT_PUBLIC_SITE_URL,
+      title: 'mbahArip',
+      type: 'website',
+      description: `Hello, I'm Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+      images: [
+        {
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.png`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      siteName: 'mbahArip',
+    },
+    twitter: {
+      cardType: 'summary_large_image',
+      handle: '@mbahArip_',
+      site: '@mbahArip_',
+    },
+  };
+
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [settings, setSettings] = useState<Settings>({
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isMaintenance: false,
+    workingOn: [],
+  });
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchSettings = fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/settings`,
+    );
+
+    Promise.all([fetchSettings])
+      .then(([settings]) => {
+        settings.json().then((data) => {
+          setSettings(data.data);
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     const handleRouteChangeStart = () => setIsLoading(true);
@@ -33,8 +97,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <div
       id='wrapper'
-      className={`w-full min-h-screen flex flex-col items-center justify-between relative ${exo2.className}`}
+      className={`w-full min-h-screen flex flex-col items-center justify-between relative ${inter.variable} ${quicksand.variable} ${jetbrainsMono.variable}`}
     >
+      <DefaultSeo {...defaultSeo} />
       <Navbar />
       <AnimatePresence
         mode='wait'
@@ -44,33 +109,19 @@ export default function App({ Component, pageProps }: AppProps) {
           }
         }}
       >
-        {isLoading ? (
-          <div
-            className='w-fit h-fit max-h-[50vh] m-auto flex flex-1 items-center justify-center'
-            key={`${router.asPath}`}
-          >
-            <video
-              autoPlay
-              loop
-              muted
-              className='w-24 h-24'
-              controls={false}
+        <SettingsProvider value={settings}>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <main
+              id='main'
+              className='flex-1 max-w-screen-lg w-full mx-auto py-2 px-4 md:px-2 my-4'
+              key={router.asPath}
             >
-              <source
-                src='/loading.webm'
-                type='video/webm'
-              />
-            </video>
-          </div>
-        ) : (
-          <main
-            id='main'
-            className='flex-1 max-w-screen-lg w-full mx-auto py-2 px-4 md:px-2 my-4 md:my-8'
-            key={router.asPath}
-          >
-            <Component {...pageProps} />
-          </main>
-        )}
+              <Component {...pageProps} />
+            </main>
+          )}
+        </SettingsProvider>
       </AnimatePresence>
       <Footer />
       <div className='fixed -z-50 bg-gradient-to-t from-zinc-950 to-black top-0 h-screen w-screen' />

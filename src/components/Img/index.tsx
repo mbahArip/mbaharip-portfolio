@@ -8,7 +8,6 @@ interface OptimizedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   width?: number;
   height?: number;
   quality?: number;
-  scale?: number;
 }
 
 export default function Img({
@@ -18,48 +17,48 @@ export default function Img({
   width = 256,
   height = 256,
   quality = 75,
-  scale,
   ...props
 }: OptimizedImageProps) {
   const [imgSrc, setImgSrc] = useState<string>(() => {
-    let img = src;
-    let _imgSrc = src;
-    if (src.startsWith('https://') || src.startsWith('http://')) {
-      _imgSrc = src.split('://')[1];
-    }
-    if (_imgSrc.startsWith('/api/attachments/')) {
-      _imgSrc = _imgSrc.replace('/api/', '');
-    }
-    if (_imgSrc.startsWith('/img/')) {
-      _imgSrc = _imgSrc.replace('/img/', '/local/img/');
-    }
-    img = _imgSrc;
-    if (width) {
-      _imgSrc = `${_imgSrc}?width=${width}`;
-    }
-    if (height) {
-      // check if query string already exists
-      if (_imgSrc.includes('?')) {
-        _imgSrc = `${_imgSrc}&height=${height}`;
+    const ignoreDefault = ['/img/no-image.webp', '/img/timeout.webp'];
+    let imageSource = src;
+    if (ignoreDefault.includes(src)) return src;
+
+    let type: 'attachments' | 'local' | 'url' = 'url';
+    if (src.startsWith('@attachments')) {
+      type = 'attachments';
+      imageSource = `/api/sharp/${src}`;
+    } else if (src.startsWith('/') || src.startsWith('@local')) {
+      type = 'local';
+      if (src.startsWith('@local')) {
+        imageSource = `/api/sharp/${src}`;
       } else {
-        _imgSrc = `${_imgSrc}?height=${height}`;
+        imageSource = `/api/sharp/@local${src}`;
       }
-    }
-    // Scale are priority over width and height
-    // If scale is provided, width and height will be ignored
-    if (scale) {
-      _imgSrc = `${img}?scale=${scale}`;
-    }
-    if (quality) {
-      // check if query string already exists
-      if (_imgSrc.includes('?')) {
-        _imgSrc = `${_imgSrc}&quality=${quality}`;
+    } else if (src.startsWith('http') || src.startsWith('@url')) {
+      type = 'url';
+      if (src.startsWith('@url')) {
+        if (src.split('://').length === 1) {
+          imageSource = `/api/sharp/@url/${src.split('://')[1]}`;
+        } else {
+          imageSource = `/api/sharp/${src}`;
+        }
       } else {
-        _imgSrc = `${_imgSrc}?quality=${quality}`;
+        imageSource = `/api/sharp/@url/${src.split('://')[1]}`;
       }
+    } else {
+      throw new Error(
+        'Invalid image source. Must be either @attachments, (@local or /), or (@url or http(s)://)',
+      );
     }
 
-    return `/api/optimize/${_imgSrc}`;
+    const optimizedUrl = new URL(imageSource, process.env.NEXT_PUBLIC_SITE_URL);
+    if (width) optimizedUrl.searchParams.append('width', width.toString());
+    if (height) optimizedUrl.searchParams.append('height', height.toString());
+    if (quality)
+      optimizedUrl.searchParams.append('quality', quality.toString());
+
+    return optimizedUrl.toString();
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -129,7 +128,7 @@ export default function Img({
           </video> */}
         </div>
       ) : (
-        <figure className='w-fit h-fit flex flex-col gap-1 items-center justify-center'>
+        <figure className='w-fit h-fit flex flex-col gap-1 items-center justify-center flex-shrink-0 flex-grow-0'>
           <img
             src={imgSrc}
             alt={alt}

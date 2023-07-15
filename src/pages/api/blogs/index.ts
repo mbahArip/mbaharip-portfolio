@@ -1,12 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import postNameParser from 'utils/blogNameParser';
 import octokit from 'utils/octokit';
-import parsePostData from 'utils/parsePostData';
 
 import { APICache, APIResponse } from 'types/api';
 import { GithubFile } from 'types/github';
-import { BlogMetadata, Blogs, Post } from 'types/post';
+import { Post } from 'types/post';
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,7 +23,7 @@ export default async function handler(
 
     const { data } = (await octokit.rest.repos.getContent({
       owner: 'mbaharip',
-      path: '@db/postsIndex.json',
+      path: '@db/blogsIndex.json',
       repo: 'mbaharip-blog-posts',
     })) as Partial<{ data: GithubFile }>;
 
@@ -34,26 +32,18 @@ export default async function handler(
     }
 
     let rawContent = Buffer.from(data.content, 'base64').toString('utf-8');
-    let content = (JSON.parse(rawContent) as Post[])
-      .filter((post) => {
-        if (!query) return true;
+    let content = (JSON.parse(rawContent) as Post[]).filter((post) => {
+      if (!query) return true;
 
-        const { title, tags } = post;
-        if (title.toLowerCase().includes(query.toLowerCase())) return true;
+      const { title, tags } = post;
+      if (title.toLowerCase().includes(query.toLowerCase())) return true;
 
-        const tagsString = tags?.map((tag) => tag.replace('#', '')).join(' ');
+      const tagsString = tags?.map((tag) => tag.replace('#', '')).join(' ');
 
-        if (tagsString?.toLowerCase().includes(query.toLowerCase()))
-          return true;
+      if (tagsString?.toLowerCase().includes(query.toLowerCase())) return true;
 
-        return false;
-      })
-      .sort((a, b) => {
-        const aDate = new Date(a.created).getTime();
-        const bDate = new Date(b.created).getTime();
-
-        return bDate - aDate;
-      });
+      return false;
+    });
 
     const dataLength = content.length;
     const totalPages = Math.ceil(dataLength / perPage);

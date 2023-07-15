@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
-import { VscClose, VscGithub, VscLinkExternal, VscMenu } from 'react-icons/vsc';
+import { VscClose, VscGithub, VscMenu } from 'react-icons/vsc';
 
 const navLinks: { name: ReactNode; href: string; target?: string }[] = [
   {
@@ -15,7 +15,7 @@ const navLinks: { name: ReactNode; href: string; target?: string }[] = [
   {
     name: (
       <span className='flex w-fit items-center gap-2'>
-        <VscGithub size={18} /> Source
+        <VscGithub size={18} /> Source Code
       </span>
     ),
     href: 'https://www.github.com/mbaharip/mbaharip-portofolio',
@@ -29,7 +29,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
-    <nav className='w-full flex flex-col items-center justify-center md:px-0 max-w-screen-lg mx-auto relative z-[9999]'>
+    <nav className='w-full flex flex-col items-center justify-center sticky top-0 md:px-0 max-w-screen-lg mx-auto z-[9999]'>
       <div className='flex bg-black items-center justify-between w-full px-2 py-2 md:py-4 sticky top-0 z-[9999]'>
         <Link
           href='/'
@@ -40,10 +40,14 @@ export default function Navbar() {
             alt='mbaharip'
             className='w-8 h-8'
           />
-          <span className='font-bold text-xl hidden md:block'>mbahArip</span>
+          <span className='font-bold text-xl hidden md:block font-heading'>
+            mbahArip
+          </span>
         </Link>
 
-        <span className='block md:hidden font-bold text-xl'>mbahArip</span>
+        <span className='block md:hidden font-bold text-xl font-heading'>
+          mbahArip
+        </span>
 
         <div className='flex items-center justify-center md:hidden relative w-8 h-8'>
           <VscMenu
@@ -101,7 +105,7 @@ export default function Navbar() {
               }`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Home
+              <span>Home</span>
             </Link>
           </li>
           {navLinks.map(({ name, href, target }) => (

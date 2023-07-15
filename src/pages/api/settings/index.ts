@@ -1,12 +1,10 @@
+import matter from 'gray-matter';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import postNameParser from 'utils/blogNameParser';
 import octokit from 'utils/octokit';
-import parsePostData from 'utils/parsePostData';
 
-import { APICache, APIResponse } from 'types/api';
+import { APICache, APIResponse, Settings } from 'types/api';
 import { GithubFile } from 'types/github';
-import { Blog, BlogMetadata, Blogs, PostDetails } from 'types/post';
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,33 +13,45 @@ export default async function handler(
   if (req.method !== 'GET') {
     return res.status(405).send('Method not allowed');
   }
-  const { name }: Partial<{ name: string }> = req.query;
 
   try {
     const { data } = (await octokit.rest.repos.getContent({
       owner: 'mbaharip',
-      path: `works/${name}.md`,
       repo: 'mbaharip-blog-posts',
+      path: 'settings.md',
     })) as Partial<{ data: GithubFile }>;
 
-    if (data && data.type !== 'file') {
+    if (!data) {
+      throw new Error('Data not found');
+    }
+
+    if (data?.type !== 'file') {
       throw new Error('Data is not a file');
     }
 
-    const parsedFile = parsePostData(data as GithubFile);
+    const rawContent = Buffer.from(data.content, 'base64').toString('utf-8');
+    const markdownData = matter(rawContent);
 
-    const payload: APIResponse<PostDetails> = {
+    let tags = [];
+    if (Array.isArray(markdownData.data.tags) && markdownData.data.tags[0]) {
+      tags = markdownData.data.tags;
+    }
+
+    const settings: Record<string, any> = {
+      ...markdownData.data,
+      tags,
+    };
+
+    // remove null or undefined values
+    Object.keys(settings).forEach((key) => {
+      if (settings[key] == null || settings[key].length === 0)
+        delete settings[key];
+    });
+
+    const payload: APIResponse<Settings> = {
       status: 200,
       timestamp: Date.now(),
-      data: {
-        title: parsedFile.metadata.title,
-        description: parsedFile.metadata.description,
-        banner: parsedFile.metadata.banner,
-        tags: parsedFile.metadata.tags,
-        content: parsedFile.content,
-        created: parsedFile.metadata.created,
-        updated: parsedFile.metadata.updated,
-      },
+      data: settings as Settings,
     };
 
     res.setHeader('Cache-Control', APICache);

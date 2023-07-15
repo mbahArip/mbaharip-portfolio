@@ -3,57 +3,83 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply font-body;
+  }
   body {
     @apply m-0 box-border p-0;
-    @apply bg-black text-white;
+    @apply bg-black text-zinc-100;
+  }
+  body::-webkit-scrollbar {
+    @apply w-1;
+  }
+  body::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  body::-webkit-scrollbar-thumb {
+    @apply bg-zinc-500 hover:bg-zinc-500 active:bg-zinc-700;
   }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading !important;
+  }
   h1 {
-    @apply text-5xl font-extrabold leading-loose tracking-wide;
+    @apply my-2 text-4xl font-extrabold tracking-wide md:text-5xl;
   }
   h2 {
-    @apply text-4xl font-bold leading-relaxed tracking-wide;
+    @apply my-2 text-3xl font-bold tracking-wide md:text-4xl;
   }
   h3 {
-    @apply text-3xl font-bold leading-relaxed tracking-normal;
+    @apply my-1 text-2xl font-bold tracking-normal md:text-3xl;
   }
   h4 {
-    @apply text-2xl font-bold leading-normal tracking-normal;
+    @apply text-xl font-bold tracking-normal md:text-2xl;
   }
   h5 {
-    @apply text-xl font-bold leading-normal tracking-normal;
+    @apply text-lg font-bold tracking-normal md:text-xl;
   }
   h6 {
-    @apply text-lg font-bold leading-snug tracking-normal;
+    @apply text-base font-bold tracking-normal md:text-lg;
   }
 
   strong,
   b {
-    @apply mx-1 font-bold tracking-wide;
+    @apply mx-0.5 font-bold;
   }
   em {
-    @apply mx-1 italic tracking-wide;
+    @apply mx-0.5 italic;
   }
   u {
-    @apply mx-1 underline decoration-white/50 decoration-2 underline-offset-2;
+    @apply mx-0.5 underline decoration-white/50 decoration-2 underline-offset-2;
   }
   p {
     @apply whitespace-pre-wrap align-top;
-    @apply my-2 text-start leading-relaxed;
+    @apply my-2 text-start leading-snug;
   }
   span {
-    @apply m-0 text-justify leading-relaxed;
+    @apply m-0 text-justify leading-snug tracking-wide;
+  }
+
+  code,
+  pre {
+    @apply font-mono !important;
+    @apply whitespace-pre-wrap break-words;
   }
 
   blockquote {
     @apply my-2 w-full text-justify leading-relaxed;
-    @apply rounded border-l-4 border-orange-500 bg-zinc-900 px-4;
+    @apply rounded border-l-4 border-orange-500 bg-zinc-900 px-4 py-2;
   }
   figure > img {
     @apply rounded-lg border border-zinc-700;
   }
   hr {
-    @apply my-4 w-full border-0 border-t-2 border-zinc-700;
+    @apply my-4 w-full border-0 border-t-4 border-zinc-700;
   }
 
   a {
@@ -64,38 +90,76 @@
     @apply mx-auto;
   }
   a:not(:has(*)) {
-    @apply text-blue-400 visited:text-orange-400 hover:text-blue-500 visited:hover:text-orange-500;
+    @apply text-zinc-300 hover:text-white;
+    @apply underline decoration-zinc-700 decoration-2 underline-offset-4 hover:decoration-orange-500;
     @apply transition-all transition-smooth;
   }
   a[target='_blank']::after {
     content: '↗';
-    @apply text-xs text-zinc-300;
+    @apply text-xs text-white;
     @apply ml-0.5;
-    @apply no-underline visited:no-underline !important;
+    @apply no-underline hover:no-underline !important;
+    text-decoration: none !important;
   }
 
   ol {
-    @apply list-inside list-disc;
+    @apply list-outside list-disc;
   }
   ol > li {
     @apply ml-2;
   }
 
+  input,
+  textarea {
+    @apply bg-transparent focus:bg-zinc-950;
+    @apply border border-zinc-500 hover:border-zinc-300 focus:border-white;
+    @apply outline-none;
+    @apply rounded-lg px-4 py-1;
+    @apply transition;
+    @apply disabled:border-zinc-900 disabled:bg-zinc-900 disabled:text-zinc-500;
+  }
+
+  select {
+    @apply bg-transparent focus:bg-zinc-950;
+    @apply border border-zinc-500 hover:border-zinc-300 focus:border-white;
+    @apply outline-none;
+    @apply rounded-lg px-4 py-1;
+    @apply transition;
+    @apply appearance-none;
+    @apply disabled:border-zinc-900 disabled:bg-zinc-900 disabled:text-zinc-500;
+  }
+
   button {
-    @apply bg-orange-500 hover:bg-orange-600 active:bg-orange-700;
+    /* @apply bg-orange-500 hover:bg-orange-600 active:bg-orange-700;
     @apply text-white hover:text-white active:text-white;
     @apply border-2 border-orange-500 hover:border-orange-600 active:border-orange-700;
     @apply w-full rounded-md;
     @apply px-4 py-2;
     @apply my-4;
-    @apply transition-all transition-smooth;
+    @apply transition-all transition-smooth; */
+    @apply bg-transparent hover:bg-orange-500 active:bg-orange-700;
+    @apply text-zinc-50 hover:text-white active:text-zinc-100;
+    @apply border border-zinc-500 hover:border-orange-700 active:border-orange-700;
+    @apply rounded-lg px-4 py-1 transition-all transition-smooth;
+    @apply disabled:bg-zinc-900 disabled:text-zinc-500;
+  }
+  button[type='reset'] {
+    @apply bg-red-500 hover:bg-red-700 active:bg-red-900;
+    @apply text-zinc-100 hover:text-zinc-50 active:text-zinc-100;
+    @apply disabled:bg-zinc-900 disabled:text-zinc-500;
+  }
+  button[type='submit'] {
+    @apply bg-transparent hover:bg-orange-500 active:bg-orange-700;
+    @apply text-zinc-50 hover:text-white active:text-zinc-100;
+    @apply border border-zinc-500 hover:border-orange-700 active:border-orange-700;
+    @apply disabled:bg-zinc-900 disabled:text-zinc-500;
   }
 }
 
 @layer components {
   .animate-underline {
     --delay: 0ms;
-    @apply relative max-w-fit underline decoration-transparent decoration-2 underline-offset-4;
+    @apply relative max-w-fit no-underline decoration-transparent decoration-2 underline-offset-4;
     animation-name: animate-underline;
     animation-duration: 0.5s;
     animation-timing-function: ease-in-out;
@@ -116,17 +180,17 @@
   span.badge {
     @apply inline-block px-1 text-xs;
     @apply rounded;
-    @apply bg-zinc-900 text-zinc-300;
+    @apply bg-zinc-800 text-white;
   }
 
   img.thumbnail {
     @apply border border-zinc-800;
   }
 
-  button.sm {
+  .sm {
     @apply px-2 py-1;
   }
-  button.lg {
+  .lg {
     @apply px-6 py-3;
   }
 }
