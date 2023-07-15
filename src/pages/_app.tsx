@@ -1,4 +1,4 @@
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { DefaultSeo, DefaultSeoProps } from 'next-seo';
 import type { AppProps } from 'next/app';
 import { Inter, JetBrains_Mono, Quicksand } from 'next/font/google';
@@ -133,13 +133,17 @@ export default function App({ Component, pageProps }: AppProps) {
           {isLoading ? (
             <Loading />
           ) : (
-            <main
+            <motion.main
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.25 }}
               id='main'
               className='flex-1 flex flex-col max-w-screen-lg w-full mx-auto py-2 px-4 md:px-2 my-4'
               key={router.asPath}
             >
               <Component {...pageProps} />
-            </main>
+            </motion.main>
           )}
         </SettingsProvider>
       </AnimatePresence>
