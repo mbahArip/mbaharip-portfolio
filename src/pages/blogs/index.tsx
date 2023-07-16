@@ -97,7 +97,7 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
               height: 630,
             },
           ],
-          siteName: 'mbahArip',
+          siteName: 'Blogs | mbahArip',
         }}
         twitter={{
           cardType: 'summary_large_image',
