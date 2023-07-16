@@ -65,53 +65,13 @@ export default function Home({ user, blogs, works, socials }: Props) {
   return (
     <>
       <NextSeo {...seo} />
-      {/* <NextSeo
-        title='Home'
-        openGraph={{
-          url: process.env.NEXT_PUBLIC_SITE_URL,
-          title: 'Home | mbahArip',
-          type: 'website',
-          description: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
-          images: [
-            {
-              url: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
-              width: 1200,
-              height: 630,
-            },
-          ],
-          siteName: 'mbahArip',
-        }}
-        twitter={{
-          cardType: 'summary_large_image',
-          handle: '@mbahArip_',
-          site: '@mbahArip_',
-        }}
-        facebook={{
-          appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID as string,
-        }}
-        additionalMetaTags={[
-          {
-            name: 'twitter:title',
-            content: 'Home | mbahArip',
-          },
-          {
-            name: 'twitter:description',
-            content: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
-          },
-          {
-            name: 'twitter:image',
-            content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
-          },
-        ]}
-        key={'seo-home'}
-      /> */}
       <section id='profile'>
         <div className='w-full flex items-center justify-center flex-col relative mb-10 md:mb-14'>
           <img
             src='/img/banner.webp'
             alt='profileBanner'
             loading='lazy'
-            className='w-full h-32 md:h-64 object-cover object-center rounded-xl'
+            className='w-full h-32 md:h-64 object-cover object-c enter rounded-xl'
           />
           <div className='w-full h-32 md:h-64 bg-gradient-to-t from-black to-transparent absolute top-0 left-0' />
           <img

@@ -90,46 +90,6 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
   return (
     <>
       <NextSeo {...seo} />
-      {/* <NextSeo
-        title='Blogs'
-        openGraph={{
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/blogs`,
-          title: 'Blogs | mbahArip',
-          type: 'website',
-          description: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
-          images: [
-            {
-              url: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
-              width: 1200,
-              height: 630,
-            },
-          ],
-          siteName: 'Blogs | mbahArip',
-        }}
-        twitter={{
-          cardType: 'summary_large_image',
-          handle: '@mbahArip_',
-          site: '@mbahArip_',
-        }}
-        facebook={{
-          appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID as string,
-        }}
-        additionalMetaTags={[
-          {
-            name: 'twitter:title',
-            content: 'Blogs | mbahArip',
-          },
-          {
-            name: 'twitter:description',
-            content: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
-          },
-          {
-            name: 'twitter:image',
-            content: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
-          },
-        ]}
-        key={'seo-blogs'}
-      /> */}
       <section
         id='header'
         className='relative mx-auto w-full'

@@ -50,41 +50,6 @@ export default function PageBlog({ blog, toc, nextPost, prevPost }: Props) {
   return (
     <>
       <NextSeo {...seo} />
-      {/* <NextSeo
-        title={blog.metadata.title}
-        description={blog.metadata.summary}
-        openGraph={{
-          type: 'article',
-          images: [
-            {
-              url: `${process.env.NEXT_PUBLIC_SITE_URL}${blog.metadata.thumbnail}`,
-              width: 800,
-              height: 600,
-            },
-          ],
-          article: {
-            tags: blog.metadata.tags,
-            publishedTime: new Date(blog.metadata.createdAt).toISOString(),
-            modifiedTime: new Date(blog.metadata.updatedAt).toISOString(),
-            authors: ['Arief Rachmawan'],
-          },
-        }}
-        additionalMetaTags={[
-          {
-            name: 'twitter:title',
-            content: `${blog.metadata.title} | mbahArip`,
-          },
-          {
-            name: 'twitter:description',
-            content: blog.metadata.summary,
-          },
-          {
-            name: 'twitter:image',
-            content: `${process.env.NEXT_PUBLIC_SITE_URL}${blog.metadata.thumbnail}`,
-          },
-        ]}
-        key={`seo-blogs-${blog.metadata.path}`}
-      /> */}
       <ArticleJsonLd
         type='BlogPosting'
         url={`${process.env.NEXT_PUBLIC_SITE_URL}${blog.metadata.path}`}

@@ -50,41 +50,6 @@ export default function PageWork({ work, toc, nextPost, prevPost }: Props) {
   return (
     <>
       <NextSeo {...seo} />
-      {/* <NextSeo
-        title={work.metadata.title}
-        description={work.metadata.summary}
-        openGraph={{
-          type: 'article',
-          images: [
-            {
-              url: `${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.thumbnail}`,
-              width: 800,
-              height: 600,
-            },
-          ],
-          article: {
-            tags: work.metadata.tags,
-            publishedTime: new Date(work.metadata.createdAt).toISOString(),
-            modifiedTime: new Date(work.metadata.updatedAt).toISOString(),
-            authors: ['Arief Rachmawan'],
-          },
-        }}
-        additionalMetaTags={[
-          {
-            name: 'twitter:title',
-            content: `${work.metadata.title} | mbahArip`,
-          },
-          {
-            name: 'twitter:description',
-            content: work.metadata.summary,
-          },
-          {
-            name: 'twitter:image',
-            content: `${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.thumbnail}`,
-          },
-        ]}
-        key={`seo-works-${work.metadata.path}`}
-      /> */}
       <ArticleJsonLd
         type='BlogPosting'
         url={`${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.path}`}
