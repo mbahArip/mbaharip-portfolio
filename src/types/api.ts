@@ -26,7 +26,7 @@ export interface Settings {
 }
 
 export const APICache =
-  'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600';
+  'public, max-age=60, s-maxage=60, stale-while-revalidate=30';
 
 export const ghHeader = {
   'Authorization': `token ${process.env.GITHUB_TOKEN}`,
