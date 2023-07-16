@@ -18,7 +18,7 @@ const navLinks: { name: ReactNode; href: string; target?: string }[] = [
         <VscGithub size={18} /> Source Code
       </span>
     ),
-    href: 'https://www.github.com/mbaharip/mbaharip-portofolio',
+    href: 'https://github.com/mbahArip/mbaharip-portfolio',
     target: '_blank',
   },
 ];
