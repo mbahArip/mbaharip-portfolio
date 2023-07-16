@@ -86,7 +86,7 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
       <NextSeo
         title='Blogs'
         openGraph={{
-          url: process.env.NEXT_PUBLIC_SITE_URL,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/blogs`,
           title: 'Blogs | mbahArip',
           type: 'website',
           description: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
