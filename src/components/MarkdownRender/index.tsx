@@ -4,6 +4,7 @@ import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
 import { NormalComponents } from 'react-markdown/lib/complex-types';
 import rehypePrism from 'rehype-prism-plus';
 import rehypeRaw from 'rehype-raw';
+import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import remarkSlug from 'remark-slug';
 import remarkToc from 'remark-toc';
@@ -42,7 +43,7 @@ export default function MarkdownRender({ children }: Props) {
   return (
     <div className={'markdown w-full'}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkSlug, remarkToc]}
+        remarkPlugins={[remarkGfm, remarkSlug, remarkToc, remarkBreaks]}
         rehypePlugins={[rehypeRaw, [rehypePrism, { ignoreMissing: true }]]}
         components={customComponents}
       >
