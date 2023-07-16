@@ -85,6 +85,28 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
     <>
       <NextSeo
         title='Blogs'
+        openGraph={{
+          url: process.env.NEXT_PUBLIC_SITE_URL,
+          title: 'Blogs | mbahArip',
+          type: 'website',
+          description: `Hello, I&apos;m Arief Rachmawan, a developer based in Bandung, Indonesia.`,
+          images: [
+            {
+              url: `${process.env.NEXT_PUBLIC_SITE_URL}/img/banner.webp`,
+              width: 1200,
+              height: 630,
+            },
+          ],
+          siteName: 'mbahArip',
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+          handle: '@mbahArip_',
+          site: '@mbahArip_',
+        }}
+        facebook={{
+          appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID as string,
+        }}
         additionalMetaTags={[
           {
             name: 'twitter:title',
