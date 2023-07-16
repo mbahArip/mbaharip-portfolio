@@ -1,10 +1,12 @@
 import { GetServerSidePropsContext } from 'next';
-import { NextSeo } from 'next-seo';
+import { NextSeo, NextSeoProps } from 'next-seo';
 import { useState } from 'react';
 import { VscClose, VscSearch } from 'react-icons/vsc';
 
 import Loading from 'components/Loading';
 import WorkEntries from 'components/Post/Entries';
+
+import generateSeoProps from 'utils/generateSeoProps';
 
 import { APIResponse } from 'types/api';
 import { Post } from 'types/post';
@@ -80,10 +82,15 @@ export default function PageWorks({ works: ssrWorks, query }: Props) {
 
     setIsLoading(false);
   };
+  const seo: NextSeoProps = generateSeoProps({
+    title: 'Works / Projects',
+    url: '/works',
+  });
 
   return (
     <>
-      <NextSeo
+      <NextSeo {...seo} />
+      {/* <NextSeo
         title='Works / Projects'
         additionalMetaTags={[
           {
@@ -100,7 +107,7 @@ export default function PageWorks({ works: ssrWorks, query }: Props) {
           },
         ]}
         key={'seo-works'}
-      />
+      /> */}
       <section
         id='header'
         className='relative mx-auto w-full'

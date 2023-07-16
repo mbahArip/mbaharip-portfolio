@@ -1,7 +1,7 @@
 import Giscus from '@giscus/react';
 import matter from 'gray-matter';
 import { GetStaticPropsContext } from 'next';
-import { ArticleJsonLd, NextSeo } from 'next-seo';
+import { ArticleJsonLd, NextSeo, NextSeoProps } from 'next-seo';
 import Link from 'next/link';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
 
@@ -10,6 +10,7 @@ import PostHeader from 'components/Post/Header';
 
 import calculateReadingSpeed from 'utils/calculateReadingSpeed';
 import formatDate from 'utils/formatDate';
+import generateSeoProps from 'utils/generateSeoProps';
 import octokit from 'utils/octokit';
 
 import { GithubFile } from 'types/github';
@@ -27,9 +28,29 @@ type Props = {
 };
 
 export default function PageWork({ work, toc, nextPost, prevPost }: Props) {
+  const seo: NextSeoProps = generateSeoProps({
+    title: work.metadata.title,
+    description: work.metadata.summary,
+    url: work.metadata.path,
+    type: 'article',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.thumbnail}`,
+        width: 800,
+        height: 600,
+      },
+    ],
+    article: {
+      tags: work.metadata.tags,
+      publishedTime: new Date(work.metadata.createdAt).toISOString(),
+      modifiedTime: new Date(work.metadata.updatedAt).toISOString(),
+      authors: ['Arief Rachmawan'],
+    },
+  });
   return (
     <>
-      <NextSeo
+      <NextSeo {...seo} />
+      {/* <NextSeo
         title={work.metadata.title}
         description={work.metadata.summary}
         openGraph={{
@@ -63,7 +84,7 @@ export default function PageWork({ work, toc, nextPost, prevPost }: Props) {
           },
         ]}
         key={`seo-works-${work.metadata.path}`}
-      />
+      /> */}
       <ArticleJsonLd
         type='BlogPosting'
         url={`${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.path}`}

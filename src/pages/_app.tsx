@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { DefaultSeo, DefaultSeoProps } from 'next-seo';
+import { DefaultSeoProps } from 'next-seo';
 import type { AppProps } from 'next/app';
 import { Inter, JetBrains_Mono, Quicksand } from 'next/font/google';
 import { useRouter } from 'next/router';
@@ -116,10 +116,10 @@ export default function App({ Component, pageProps }: AppProps) {
       id='wrapper'
       className={`w-full min-h-screen flex flex-col items-center justify-between relative ${inter.variable} ${quicksand.variable} ${jetbrainsMono.variable}`}
     >
-      <DefaultSeo
+      {/* <DefaultSeo
         {...defaultSeo}
         key={`defaultSEO-${router.asPath}`}
-      />
+      /> */}
       <Navbar />
       <AnimatePresence
         mode='wait'

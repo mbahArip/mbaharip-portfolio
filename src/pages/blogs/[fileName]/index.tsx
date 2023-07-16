@@ -1,7 +1,7 @@
 import Giscus from '@giscus/react';
 import matter from 'gray-matter';
 import { GetStaticPropsContext } from 'next';
-import { ArticleJsonLd, NextSeo } from 'next-seo';
+import { ArticleJsonLd, NextSeo, NextSeoProps } from 'next-seo';
 import Link from 'next/link';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
 
@@ -10,6 +10,7 @@ import PostHeader from 'components/Post/Header';
 
 import calculateReadingSpeed from 'utils/calculateReadingSpeed';
 import formatDate from 'utils/formatDate';
+import generateSeoProps from 'utils/generateSeoProps';
 import octokit from 'utils/octokit';
 
 import { GithubFile } from 'types/github';
@@ -27,9 +28,29 @@ type Props = {
 };
 
 export default function PageBlog({ blog, toc, nextPost, prevPost }: Props) {
+  const seo: NextSeoProps = generateSeoProps({
+    title: blog.metadata.title,
+    description: blog.metadata.summary,
+    url: blog.metadata.path,
+    type: 'article',
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}${blog.metadata.thumbnail}`,
+        width: 800,
+        height: 600,
+      },
+    ],
+    article: {
+      tags: blog.metadata.tags,
+      publishedTime: new Date(blog.metadata.createdAt).toISOString(),
+      modifiedTime: new Date(blog.metadata.updatedAt).toISOString(),
+      authors: ['Arief Rachmawan'],
+    },
+  });
   return (
     <>
-      <NextSeo
+      <NextSeo {...seo} />
+      {/* <NextSeo
         title={blog.metadata.title}
         description={blog.metadata.summary}
         openGraph={{
@@ -63,7 +84,7 @@ export default function PageBlog({ blog, toc, nextPost, prevPost }: Props) {
           },
         ]}
         key={`seo-blogs-${blog.metadata.path}`}
-      />
+      /> */}
       <ArticleJsonLd
         type='BlogPosting'
         url={`${process.env.NEXT_PUBLIC_SITE_URL}${blog.metadata.path}`}

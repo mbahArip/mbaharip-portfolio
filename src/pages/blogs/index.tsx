@@ -1,10 +1,12 @@
 import { GetServerSidePropsContext } from 'next';
-import { NextSeo } from 'next-seo';
+import { NextSeo, NextSeoProps } from 'next-seo';
 import { useState } from 'react';
 import { VscClose, VscSearch } from 'react-icons/vsc';
 
 import Loading from 'components/Loading';
 import BlogEntries from 'components/Post/Entries';
+
+import generateSeoProps from 'utils/generateSeoProps';
 
 import { APIResponse } from 'types/api';
 import { Post } from 'types/post';
@@ -80,10 +82,15 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
 
     setIsLoading(false);
   };
+  const seo: NextSeoProps = generateSeoProps({
+    title: 'Blogs',
+    url: '/blogs',
+  });
 
   return (
     <>
-      <NextSeo
+      <NextSeo {...seo} />
+      {/* <NextSeo
         title='Blogs'
         openGraph={{
           url: `${process.env.NEXT_PUBLIC_SITE_URL}/blogs`,
@@ -122,7 +129,7 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
           },
         ]}
         key={'seo-blogs'}
-      />
+      /> */}
       <section
         id='header'
         className='relative mx-auto w-full'

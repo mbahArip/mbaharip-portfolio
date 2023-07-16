@@ -1,4 +1,4 @@
-import { NextSeo } from 'next-seo';
+import { NextSeo, NextSeoProps } from 'next-seo';
 import Link from 'next/link';
 import {
   SiNextdotjs,
@@ -11,6 +11,7 @@ import BlogEntries from 'components/Post/Entries';
 
 import { useSettings } from 'contexts/settings';
 import capitalize from 'utils/capitalize';
+import generateSeoProps from 'utils/generateSeoProps';
 
 import { User } from 'types/about';
 import { ghHeader } from 'types/api';
@@ -60,9 +61,11 @@ const experiences: {
 
 export default function Home({ user, blogs, works, socials }: Props) {
   const settings = useSettings();
+  const seo: NextSeoProps = generateSeoProps({ title: 'Home' });
   return (
     <>
-      <NextSeo
+      <NextSeo {...seo} />
+      {/* <NextSeo
         title='Home'
         openGraph={{
           url: process.env.NEXT_PUBLIC_SITE_URL,
@@ -101,7 +104,7 @@ export default function Home({ user, blogs, works, socials }: Props) {
           },
         ]}
         key={'seo-home'}
-      />
+      /> */}
       <section id='profile'>
         <div className='w-full flex items-center justify-center flex-col relative mb-10 md:mb-14'>
           <img
