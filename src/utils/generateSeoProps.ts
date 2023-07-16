@@ -35,7 +35,7 @@ export default function generateSeoProps({
       url: url
         ? `${process.env.NEXT_PUBLIC_SITE_URL}${url}`
         : process.env.NEXT_PUBLIC_SITE_URL,
-      title: title,
+      title: title ? `${title} | mbahArip` : 'mbahArip',
       type: type ?? 'website',
       description:
         description ??
