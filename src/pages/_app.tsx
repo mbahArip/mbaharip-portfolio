@@ -73,7 +73,7 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [settings, setSettings] = useState<Settings>({
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -116,6 +116,10 @@ export default function App({ Component, pageProps }: AppProps) {
       id='wrapper'
       className={`w-full min-h-screen flex flex-col items-center justify-between relative ${inter.variable} ${quicksand.variable} ${jetbrainsMono.variable}`}
     >
+      <DefaultSeo
+        {...defaultSeo}
+        key={`defaultSEO-${router.asPath}`}
+      />
       <Navbar />
       <AnimatePresence
         mode='wait'
@@ -138,10 +142,6 @@ export default function App({ Component, pageProps }: AppProps) {
               className='flex-1 flex flex-col max-w-screen-lg w-full mx-auto py-2 px-4 md:px-2 my-4'
               key={router.asPath}
             >
-              <DefaultSeo
-                {...defaultSeo}
-                key={`defaultSEO-${router.asPath}`}
-              />
               <Component {...pageProps} />
             </motion.main>
           )}
