@@ -163,7 +163,7 @@ export default function PostHeader({ post }: Props) {
       ) : (
         <>
           <img
-            src={imgSrc ?? '/img/no-image.webp'}
+            src={imgSrc ?? '/img/banner.webp'}
             alt={post.metadata.title}
             className='w-full max-w-screen-lg mx-auto h-32 md:h-48 object-cover transition-all transition-smooth rounded-lg opacity-75 absolute top-0 left-0'
             style={{
