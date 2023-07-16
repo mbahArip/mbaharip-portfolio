@@ -38,9 +38,10 @@ export default function Img({
     } else if (src.startsWith('http') || src.startsWith('@url')) {
       type = 'url';
       if (src.startsWith('@url')) {
-        if (src.split('://').length === 1) {
+        if (src.split('://').length > 1) {
           imageSource = `/api/sharp/@url/${src.split('://')[1]}`;
         } else {
+          console.log('url', `/api/sharp/${src}`);
           imageSource = `/api/sharp/${src}`;
         }
       } else {
