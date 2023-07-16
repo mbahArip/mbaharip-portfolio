@@ -33,24 +33,26 @@ export default async function handler(
       );
     }
 
-    let imgBuffer: Buffer | ArrayBuffer | undefined;
+    let imgBuffer: Buffer | undefined;
     if (type === 'attachments') {
       const attachmentUrl = new URL(
         `/mbahArip/mbaharip-blog-posts/master/${urlQuery}`,
         'https://raw.githubusercontent.com',
       );
-      imgBuffer = await fetch(attachmentUrl).then((res) => res.arrayBuffer());
+      const res = await fetch(attachmentUrl).then((res) => res.arrayBuffer());
+      imgBuffer = Buffer.from(res);
     } else if (type === 'local') {
       const localUrl = new URL(
         urlQuery.replace('@local/', ''),
         process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
       );
-      imgBuffer = await fetch(localUrl).then((res) => res.arrayBuffer());
+      const res = await fetch(localUrl).then((res) => res.arrayBuffer());
+      imgBuffer = Buffer.from(res);
     } else if (type === 'url') {
       const externalUrl = new URL(urlQuery.replace('@url/', 'https://'));
-      imgBuffer = await fetch(externalUrl).then((res) => res.arrayBuffer());
+      const res = await fetch(externalUrl).then((res) => res.arrayBuffer());
+      imgBuffer = Buffer.from(res);
     }
-
     const shrp = await sharp(imgBuffer)
       .resize({
         width: parseInt(width) || undefined,
