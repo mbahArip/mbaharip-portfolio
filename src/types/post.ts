@@ -3,6 +3,12 @@ export interface PostDetails {
   metadata: Metadata;
 }
 
+export interface PostToC {
+  level: number;
+  text: string;
+  slug: string;
+}
+
 export interface Metadata {
   title: string;
   summary: string;

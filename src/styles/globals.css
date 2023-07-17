@@ -90,7 +90,7 @@
     @apply mx-auto;
   }
   a:not(:has(*)) {
-    @apply text-zinc-300 hover:text-white;
+    @apply text-zinc-50 hover:text-white;
     @apply underline decoration-zinc-700 decoration-2 underline-offset-4 hover:decoration-orange-500;
     @apply transition-all transition-smooth;
   }

@@ -106,7 +106,7 @@ export default function Img({
     <>
       {isLoading ? (
         <div
-          className={`grid border border-zinc-700 place-items-center ${
+          className={`flex border border-zinc-700 items-center justify-center ${
             props.className ?? ''
           }`}
         >
@@ -129,7 +129,7 @@ export default function Img({
           </video> */}
         </div>
       ) : (
-        <figure className='w-fit h-fit flex flex-col gap-1 items-center justify-center flex-shrink-0 flex-grow-0'>
+        <figure className='w-auto h-auto flex flex-col gap-1 items-center justify-center'>
           <img
             src={imgSrc}
             alt={alt}

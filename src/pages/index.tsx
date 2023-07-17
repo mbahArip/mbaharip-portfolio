@@ -158,14 +158,14 @@ export default function Home({ user, blogs, works, socials }: Props) {
                   key={`${experience.place}@${index}`}
                   className='list-disc list-inside text-base flex flex-col py-2'
                 >
-                  <div className='flex items-center gap-1 text-zinc-500'>
+                  <div className='flex items-center gap-1 text-zinc-300'>
                     <span className='text-sm'>
                       {experience.dateFrom} - {experience.dateTo}
                     </span>
                     {' ・ '}
                     <span className='text-sm'>{experience.description}</span>
                   </div>
-                  <span className='leading-tight text-start'>
+                  <span className='leading-tight text-start text-white'>
                     <span className='font-bold leading-tight'>
                       {experience.role}
                     </span>{' '}

@@ -8,10 +8,14 @@
     @apply break-words leading-loose;
   }
 
-  .markdown h1,
-  .markdown h2,
-  .markdown h3 {
+  .markdown h1 {
     @apply my-4 border-b-2 border-b-zinc-500 first-letter:capitalize;
+  }
+  .markdown h2 {
+    @apply mt-8 pl-0 text-3xl;
+  }
+  .markdown h3 {
+    @apply text-xl before:mr-2 before:content-['#'];
   }
 
   .markdown code:not(pre code) {

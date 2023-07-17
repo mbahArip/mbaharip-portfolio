@@ -150,10 +150,10 @@ export default function PostHeader({ post }: Props) {
   return (
     <section
       id='post-header'
-      className='w-full h-32 md:h-48 mb-8 flex mx-auto relative items-end'
+      className='w-full h-fit md:h-fit flex flex-col mx-auto relative items-start'
     >
       {isLoading ? (
-        <div className='w-full max-w-screen-lg h-32 md:h-48 grid place-items-center absolute top-0 left-0'>
+        <div className='w-full max-w-screen-lg h-36 md:h-48 grid place-items-center relative top-0 left-0'>
           <ReactLoading
             type='spin'
             width={16}
@@ -165,16 +165,21 @@ export default function PostHeader({ post }: Props) {
           <img
             src={imgSrc ?? '/img/banner.webp'}
             alt={post.metadata.title}
-            className='w-full max-w-screen-lg mx-auto h-32 md:h-48 object-cover transition-all transition-smooth rounded-lg opacity-75 absolute top-0 left-0'
+            className='w-full max-w-screen-lg mx-auto h-36 md:h-48 object-cover transition-all transition-smooth rounded-lg opacity-75 relative top-0 left-0'
             style={{
               objectPosition: `calc(${post.metadata.thumbnail_x} * 100%) calc(${post.metadata.thumbnail_y} * 100%)`,
             }}
           />
-          <div className='w-full max-w-screen-lg mx-auto h-32 md:h-48 bg-gradient-to-t from-black to-transparent absolute top-0 left-0 transition-all transition-smooth' />
+          <div className='w-full max-w-screen-lg mx-auto h-36 md:h-48 bg-gradient-to-t from-black to-transparent absolute top-0 left-0 transition-all transition-smooth' />
         </>
       )}
       <div className='relative px-2 z-10'>
-        <h1 className='text-white'>{post.metadata.title}</h1>
+        <h1
+          id='post-header'
+          className='text-white text-2xl md:text-4xl'
+        >
+          {post.metadata.title}
+        </h1>
       </div>
     </section>
   );
