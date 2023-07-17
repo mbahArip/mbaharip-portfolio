@@ -45,7 +45,10 @@ export default function PageWork({ work, toc, nextPost, prevPost }: Props) {
 
   return (
     <>
-      <NextSeo {...seo} />
+      <NextSeo
+        {...seo}
+        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}`}
+      />
       <ArticleJsonLd
         type='BlogPosting'
         url={`${process.env.NEXT_PUBLIC_SITE_URL}${work.metadata.path}`}

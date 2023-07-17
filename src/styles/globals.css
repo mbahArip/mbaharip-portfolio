@@ -178,7 +178,7 @@
   }
 
   span.badge {
-    @apply inline-block px-1 text-xs;
+    @apply inline-block px-1 text-sm md:text-xs;
     @apply rounded;
     @apply bg-zinc-800 text-white;
   }

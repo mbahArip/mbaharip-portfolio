@@ -41,7 +41,10 @@ export default function PageBlog({ blog, toc, nextPost, prevPost }: Props) {
 
   return (
     <>
-      <NextSeo {...seo} />
+      <NextSeo
+        {...seo}
+        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}`}
+      />
       <ArticleJsonLd
         type='BlogPosting'
         url={`${process.env.NEXT_PUBLIC_SITE_URL}${blog.metadata.path}`}
