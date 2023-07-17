@@ -160,6 +160,8 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       tags,
       createdAt: markdownData.data.created ?? new Date().toISOString(),
       updatedAt: markdownData.data.updated ?? new Date().toISOString(),
+      repositoryUrl: markdownData.data.repositoryUrl ?? undefined,
+      demoUrl: markdownData.data.demoUrl ?? undefined,
     },
   };
 

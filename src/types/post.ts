@@ -18,6 +18,8 @@ export interface Metadata {
   tags: string[];
   createdAt: Date | string | number;
   updatedAt: Date | string | number;
+  repositoryUrl?: string;
+  demoUrl?: string;
   path?: string;
 }
 

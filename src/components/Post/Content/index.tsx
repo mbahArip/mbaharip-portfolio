@@ -84,6 +84,34 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
               </span>
             </div>
           </div>
+          {post.metadata.repositoryUrl ? (
+            <div className='flex flex-col gap-1'>
+              <h6>Repository URL</h6>
+              <Link
+                href={post.metadata.repositoryUrl}
+                target='_blank'
+                className='w-full text-start text-sm'
+              >
+                {post.metadata.repositoryUrl}
+              </Link>
+            </div>
+          ) : (
+            <></>
+          )}
+          {post.metadata.demoUrl ? (
+            <div className='flex flex-col gap-1'>
+              <h6>Demo URL</h6>
+              <Link
+                href={post.metadata.demoUrl}
+                target='_blank'
+                className='w-full text-start text-sm'
+              >
+                {post.metadata.demoUrl}
+              </Link>
+            </div>
+          ) : (
+            <></>
+          )}
         </section>
         <section
           id='content'
