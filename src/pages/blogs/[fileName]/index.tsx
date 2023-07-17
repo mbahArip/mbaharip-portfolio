@@ -58,7 +58,10 @@ export default function PageBlog({ blog, toc, nextPost, prevPost }: Props) {
         description={blog.metadata.summary}
       />
       <article>
-        <PostHeader post={blog} />
+        <PostHeader
+          post={blog}
+          category='blogs'
+        />
         <hr />
         <PostContent
           post={blog}

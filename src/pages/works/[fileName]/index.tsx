@@ -62,7 +62,10 @@ export default function PageWork({ work, toc, nextPost, prevPost }: Props) {
         description={work.metadata.summary}
       />
       <article>
-        <PostHeader post={work} />
+        <PostHeader
+          post={work}
+          category='works'
+        />
         <hr />
         <PostContent
           post={work}
