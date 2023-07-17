@@ -70,7 +70,6 @@ export default function Home({ user, blogs, works, socials }: Props) {
           <img
             src='/img/banner.webp'
             alt='profileBanner'
-            loading='lazy'
             className='w-full h-32 md:h-64 object-cover object-c enter rounded-xl'
           />
           <div className='w-full h-32 md:h-64 bg-gradient-to-t from-black to-transparent absolute top-0 left-0' />
@@ -177,18 +176,6 @@ export default function Home({ user, blogs, works, socials }: Props) {
                       {experience.place}
                     </Link>
                   </span>
-                  {/* <li
-                key={`${experience.place}@${index}`}
-                className='w-full p-2 flex flex-col border-b border-zinc-500 last-of-type:border-b-0'
-              >
-                <h6>
-                  {experience.place} as {experience.role}
-                </h6>
-                <span className='font-bold text-sm text-zinc-700'>
-                  {experience.dateFrom} - {experience.dateTo}
-                </span>
-                <span className='text-base'>{experience.description}</span>
-              </li> */}
                 </li>
               ))}
             </ul>
