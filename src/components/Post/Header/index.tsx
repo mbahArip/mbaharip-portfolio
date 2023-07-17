@@ -1,13 +1,16 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { VscArrowLeft } from 'react-icons/vsc';
 import ReactLoading from 'react-loading';
 
 import { PostDetails } from 'types/post';
 
 type Props = {
   post: PostDetails;
+  category: 'works' | 'blogs';
 };
 
-export default function PostHeader({ post }: Props) {
+export default function PostHeader({ post, category }: Props) {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [imgSrc, setImgSrc] = useState<string>(() => {
     const src = post.metadata.thumbnail ?? '/img/no-image.webp';
@@ -152,6 +155,13 @@ export default function PostHeader({ post }: Props) {
       id='post-header'
       className='w-full h-fit md:h-fit flex flex-col mx-auto relative items-start'
     >
+      <Link
+        href={`/${category}`}
+        className='flex items-center gap-1 w-fit mb-2'
+      >
+        <VscArrowLeft size={18} />
+        <span className='text-white text-sm md:text-base'>{category}</span>
+      </Link>
       {isLoading ? (
         <div className='w-full max-w-screen-lg h-36 md:h-48 grid place-items-center relative top-0 left-0'>
           <ReactLoading
@@ -161,7 +171,7 @@ export default function PostHeader({ post }: Props) {
           />
         </div>
       ) : (
-        <>
+        <div className='relative w-full h-fit'>
           <img
             src={imgSrc ?? '/img/banner.webp'}
             alt={post.metadata.title}
@@ -171,7 +181,7 @@ export default function PostHeader({ post }: Props) {
             }}
           />
           <div className='w-full max-w-screen-lg mx-auto h-36 md:h-48 bg-gradient-to-t from-black to-transparent absolute top-0 left-0 transition-all transition-smooth' />
-        </>
+        </div>
       )}
       <div className='relative px-2 z-10'>
         <h1
