@@ -10,13 +10,13 @@
     @apply m-0 box-border p-0;
     @apply bg-black text-zinc-100;
   }
-  body::-webkit-scrollbar {
-    @apply w-1;
+  *::-webkit-scrollbar {
+    @apply h-1 w-1;
   }
-  body::-webkit-scrollbar-track {
+  *::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
-  body::-webkit-scrollbar-thumb {
+  *::-webkit-scrollbar-thumb {
     @apply bg-zinc-500 hover:bg-zinc-500 active:bg-zinc-700;
   }
 

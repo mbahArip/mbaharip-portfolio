@@ -196,7 +196,7 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
 
       <section
         id='side-toc'
-        className={`h-screen max-w-xs w-full fixed top-0 right-0 hidden ml-auto md:flex z-0 items-center justify-center ${
+        className={`h-screen max-w-sm w-full fixed top-0 right-0 hidden ml-auto md:flex z-0 items-center justify-center ${
           isTOCVisible
             ? 'opacity-0 translate-x-full pointer-events-none'
             : 'opacity-100 translate-x-0 pointer-events-auto'
@@ -207,30 +207,6 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
             Table of contents
           </h6>
           <div className='flex flex-col gap-2 w-full flex-1'>
-            <a
-              href={`#post-header`}
-              className='opacity-80 hover:opacity-100 transition transition-smooth'
-              onClick={(e) => {
-                e.preventDefault();
-                const targetHeading = document.getElementById('post-header');
-                if (targetHeading) {
-                  const headerOffset = 72;
-                  const targetHeadingPos =
-                    targetHeading.getBoundingClientRect().top;
-                  const scrollPos =
-                    targetHeadingPos + window.scrollY - headerOffset;
-
-                  window.scrollTo({
-                    top: scrollPos,
-                    behavior: 'smooth',
-                  });
-                }
-              }}
-            >
-              <span className={`text-sm cursor-pointer`}>
-                - Top of the post
-              </span>
-            </a>
             {toc.map((item) => {
               if (item.text.toLowerCase() === 'table of contents') return null;
               return (
@@ -238,6 +214,9 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
                   href={`#${item.slug}`}
                   key={item.slug}
                   className='opacity-80 hover:opacity-100 transition transition-smooth'
+                  style={{
+                    marginLeft: `${(item.level - 2) * 1.25}rem`,
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     const targetHeading = document.getElementById(item.slug);
@@ -256,12 +235,9 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
                   }}
                 >
                   <span
-                    className={`text-sm cursor-pointer`}
-                    style={{
-                      marginLeft: `${(item.level - 2) * 1}rem`,
-                    }}
+                    className={`text-sm cursor-pointer relative before:content-['-'] before:absolute before:-left-2 before:top-0`}
                   >
-                    - {item.text}
+                    {item.text}
                   </span>
                 </a>
               );
@@ -269,6 +245,9 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
             <a
               href={`#comments`}
               className='opacity-80 hover:opacity-100 transition transition-smooth'
+              style={{
+                marginLeft: `${(2 - 2) * 1.25}rem`,
+              }}
               onClick={(e) => {
                 e.preventDefault();
                 const targetHeading = document.getElementById('comments');
@@ -286,7 +265,11 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
                 }
               }}
             >
-              <span className={`text-sm cursor-pointer`}>- Comments</span>
+              <span
+                className={`text-sm cursor-pointer relative before:content-['-'] before:absolute before:-left-2 before:top-0`}
+              >
+                Comments
+              </span>
             </a>
           </div>
         </div>

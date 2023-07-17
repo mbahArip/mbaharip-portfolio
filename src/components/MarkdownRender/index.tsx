@@ -17,12 +17,15 @@ const customComponents: Partial<
 > = {
   img({ alt, src, ...props }: any) {
     return (
-      <img
-        src={src}
-        alt={alt}
-        className='w-full max-w-sm mx-auto object-cover rounded-lg border-4 border-zinc-300 bg-zinc-300 cursor-pointer'
-        onClick={() => window.open(src, '_blank')}
-      />
+      <div className='w-full flex flex-col gap-2 items-center'>
+        <img
+          src={src}
+          alt={alt}
+          className='w-full max-h-screen mx-auto object-cover rounded-lg border-4 border-zinc-300 bg-zinc-300 cursor-pointer'
+          onClick={() => window.open(src, '_blank')}
+        />
+        <span className='text-sm text-zinc-500'>{alt}</span>
+      </div>
     );
   },
   a({ href, ...props }: any) {
@@ -65,7 +68,6 @@ const customComponents: Partial<
   h3({ children, ...props }: any) {
     return (
       <>
-        <hr />
         <h3 {...props}>{children}</h3>
       </>
     );

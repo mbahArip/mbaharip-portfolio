@@ -5,17 +5,31 @@
     @apply bg-inherit leading-normal text-inherit;
   }
   .markdown p {
-    @apply break-words leading-loose;
+    @apply leading-normal;
+  }
+  .markdown strong,
+  .markdown b,
+  .markdown em {
+    @apply font-bold text-pink-400;
+  }
+  .markdown em {
+    @apply underline decoration-wavy decoration-1 underline-offset-2;
   }
 
   .markdown h1 {
     @apply my-4 border-b-2 border-b-zinc-500 first-letter:capitalize;
   }
   .markdown h2 {
-    @apply mt-8 pl-0 text-3xl;
+    @apply mt-8 w-full pl-0 text-3xl underline decoration-zinc-700 underline-offset-8;
   }
   .markdown h3 {
-    @apply text-xl before:mr-2 before:content-['#'];
+    @apply my-4 text-xl text-blue-400;
+  }
+  .markdown h4 {
+    @apply text-lg text-orange-300;
+  }
+  .markdown h5 {
+    @apply text-base text-red-400;
   }
 
   .markdown code:not(pre code) {
@@ -43,6 +57,29 @@
   }
 
   .markdown table {
+    border-collapse: collapse;
+    width: 100%;
+    /* background-color: #212121; */
+    @apply bg-zinc-800;
+  }
+
+  .markdown th,
+  .markdown td {
+    border: 1px solid #333;
+    color: #fff;
+    padding: 8px;
+  }
+
+  .markdown th {
+    /* background-color: #444; */
+    @apply bg-zinc-950;
+  }
+
+  .markdown tr:nth-child(even) {
+    /* background-color: #333; */
+    @apply bg-zinc-900;
+  }
+  /* .markdown table {
     @apply mx-auto mb-4 block w-full border-collapse overflow-auto;
   }
   .markdown th {
@@ -60,7 +97,7 @@
   }
   .markdown tr:nth-child(odd) td {
     @apply bg-zinc-800;
-  }
+  } */
 
   .markdown ul.contains-task-list {
     @apply list-none;
@@ -78,5 +115,9 @@
 
   .markdown hr {
     @apply my-4 border-b-2 border-t-0 border-b-zinc-400 dark:border-b-zinc-700;
+  }
+
+  .markdown blockquote {
+    @apply italic text-teal-400;
   }
 }
