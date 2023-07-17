@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { VscArrowLeft } from 'react-icons/vsc';
 import ReactLoading from 'react-loading';
 
+import capitalize from 'utils/capitalize';
+
 import { PostDetails } from 'types/post';
 
 type Props = {
@@ -160,7 +162,9 @@ export default function PostHeader({ post, category }: Props) {
         className='flex items-center gap-1 w-fit mb-2'
       >
         <VscArrowLeft size={18} />
-        <span className='text-white text-sm md:text-base'>{category}</span>
+        <span className='text-white text-sm md:text-base'>
+          {capitalize(category)}
+        </span>
       </Link>
       {isLoading ? (
         <div className='w-full max-w-screen-lg h-36 md:h-48 grid place-items-center relative top-0 left-0'>
