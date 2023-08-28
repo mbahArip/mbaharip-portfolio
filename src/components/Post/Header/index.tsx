@@ -157,15 +157,6 @@ export default function PostHeader({ post, category }: Props) {
       id='post-header'
       className='w-full h-fit md:h-fit flex flex-col mx-auto relative items-start'
     >
-      <Link
-        href={`/${category}`}
-        className='flex items-center gap-1 w-fit mb-2'
-      >
-        <VscArrowLeft size={18} />
-        <span className='text-white text-sm md:text-base'>
-          {capitalize(category)}
-        </span>
-      </Link>
       {isLoading ? (
         <div className='w-full max-w-screen-lg h-36 md:h-48 grid place-items-center relative top-0 left-0'>
           <ReactLoading
@@ -188,8 +179,17 @@ export default function PostHeader({ post, category }: Props) {
         </div>
       )}
       <div className='relative px-2 z-10'>
+        <Link
+          href={`/${category}`}
+          className='flex items-center gap-1 w-fit mb-2'
+        >
+          <VscArrowLeft size={18} />
+          <span className='text-white text-sm md:text-base'>
+            {capitalize(category)}
+          </span>
+        </Link>
         <h1
-          id='post-header'
+          id='post-header-title'
           className='text-white text-2xl md:text-4xl'
         >
           {post.metadata.title}
