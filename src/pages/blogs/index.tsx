@@ -22,6 +22,7 @@ type Props = {
 export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [keyword, setKeyword] = useState<string>(query.q);
+  const [searchKeyword, setSearchKeyword] = useState<string>(query.q);
 
   const [blogs, setBlogs] = useState<Post[]>(ssrBlogs.data ?? []);
   const [currentPage, setCurrentPage] = useState<number>(query.page ?? 1);
@@ -35,6 +36,7 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
     setIsLoading(true);
 
     const url = new URL(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs`);
+    setSearchKeyword(keyword);
     url.searchParams.append('q', keyword);
     url.searchParams.append('page', '1');
 
@@ -113,7 +115,12 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
                 placeholder='Search'
                 className='w-full pr-8'
                 value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
+                onChange={(e) => {
+                  setKeyword(e.target.value);
+                  if (!e.target.value) {
+                    resetHandler();
+                  }
+                }}
               />
               {keyword ? (
                 <VscClose
@@ -148,7 +155,7 @@ export default function PageBlogs({ blogs: ssrBlogs, query }: Props) {
                 <h4 className='text-center'>No blog posts found.</h4>
                 <span>
                   Can&apos;t find posts with keyword &quot;
-                  <b>{keyword}</b>
+                  <b>{searchKeyword}</b>
                   &quot;.
                 </span>
                 <span>Try searching with different keyword.</span>
