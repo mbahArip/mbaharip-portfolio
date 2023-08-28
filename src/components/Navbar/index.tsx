@@ -30,7 +30,7 @@ export default function Navbar() {
 
   return (
     <nav className='w-full flex flex-col items-center justify-center sticky top-0 md:px-0 max-w-screen-lg mx-auto z-[9999]'>
-      <div className='flex bg-black items-center justify-between w-full px-2 py-2 md:py-4 sticky top-0 z-[9999]'>
+      <div className='flex bg-black/80 drop-shadow-lg backdrop-blur items-center justify-between w-full px-2 py-2 md:py-4 sticky top-0 z-[9999]'>
         <Link
           href='/'
           className='flex gap-2 items-center'
