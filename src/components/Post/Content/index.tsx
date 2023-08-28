@@ -19,7 +19,14 @@ type Props = {
 };
 
 export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
-  const [isTOCVisible, setIsTOCVisible] = useState<boolean>(false);
+  const [highestHeadingLevel] = useState<number>(() => {
+    const highestHeadingLevel = toc.reduce((prev, curr) => {
+      if (curr.level < prev) return curr.level;
+      return prev;
+    }, 6);
+    return highestHeadingLevel;
+  });
+  const [isTOCVisible, setIsTOCVisible] = useState<boolean>(true);
 
   useEffect(() => {
     const tocElement = document.querySelector('#toc');
@@ -36,6 +43,7 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
       observer.disconnect();
     };
   }, []);
+
   return (
     <>
       <div className='w-full grid grid-cols-1 md:grid-rows-1 md:grid-cols-5 gap-y-4'>
@@ -84,40 +92,37 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
               </span>
             </div>
           </div>
-          {post.metadata.repositoryUrl ? (
-            <div className='flex flex-col gap-1'>
-              <h6>Repository URL</h6>
+
+          <div className='grid grid-cols-2 md:grid-cols-1 gap-2'>
+            {post.metadata.repositoryUrl ? (
               <Link
                 href={post.metadata.repositoryUrl}
                 target='_blank'
-                className='w-full text-start text-sm'
+                className='text-base font-bold tracking-normal md:text-lg font-heading w-full'
               >
-                {post.metadata.repositoryUrl}
+                Repository
               </Link>
-            </div>
-          ) : (
-            <></>
-          )}
-          {post.metadata.demoUrl ? (
-            <div className='flex flex-col gap-1'>
-              <h6>Demo URL</h6>
+            ) : (
+              <></>
+            )}
+            {post.metadata.demoUrl ? (
               <Link
                 href={post.metadata.demoUrl}
                 target='_blank'
-                className='w-full text-start text-sm'
+                className='text-base font-bold tracking-normal md:text-lg font-heading w-full'
               >
-                {post.metadata.demoUrl}
+                Demo
               </Link>
-            </div>
-          ) : (
-            <></>
-          )}
+            ) : (
+              <></>
+            )}
+          </div>
         </section>
         <section
           id='content'
           className='md:col-span-4 md:px-4 md:border-l-2 md:border-zinc-700'
         >
-          {toc.length === 0 ? (
+          {/* {toc.length === 0 ? (
             <></>
           ) : (
             <section
@@ -189,24 +194,28 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
                 </a>
               </div>
             </section>
-          )}
+          )} */}
           <MarkdownRender>{post.content}</MarkdownRender>
         </section>
       </div>
 
       <section
         id='side-toc'
-        className={`h-screen max-w-sm w-full fixed top-0 right-0 hidden ml-auto md:flex z-0 items-center justify-center ${
-          isTOCVisible
-            ? 'opacity-0 translate-x-full pointer-events-none'
-            : 'opacity-100 translate-x-0 pointer-events-auto'
-        } transition-all transition-smooth`}
+        className={`h-screen max-w-xs w-full fixed top-0 right-0 hidden ml-auto lg:flex z-50 items-center justify-center transition-all transition-smooth`}
       >
-        <div className='flex flex-col gap-4 px-4 py-2 bg-zinc-900 w-full rounded-l-lg'>
-          <h6 className='text-center underline decoration-2 underline-offset-4'>
-            Table of contents
-          </h6>
-          <div className='flex flex-col gap-2 w-full flex-1'>
+        <div
+          className={`flex flex-col gap-4 px-4 py-2 bg-zinc-900 w-full rounded-l-lg border border-r-0 border-zinc-500 drop-shadow-xl transition-all transition-smooth  ${
+            isTOCVisible
+              ? 'opacity-0 translate-x-full pointer-events-none'
+              : `opacity-100 translate-x-[15rem] hover:translate-x-[0] pointer-events-auto`
+          }`}
+        >
+          <div className='flex items-center justify-between'>
+            <h6 className='text-center'>Table of contents</h6>
+          </div>
+          <div
+            className={`flex flex-col gap-2 w-full flex-1 max-h-96 overflow-auto`}
+          >
             {toc.map((item) => {
               if (item.text.toLowerCase() === 'table of contents') return null;
               return (
@@ -215,7 +224,9 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
                   key={item.slug}
                   className='opacity-80 hover:opacity-100 transition transition-smooth'
                   style={{
-                    marginLeft: `${(item.level - 2) * 1.25}rem`,
+                    marginLeft: `${
+                      (item.level - highestHeadingLevel) * 1.25
+                    }rem`,
                   }}
                   onClick={(e) => {
                     e.preventDefault();
@@ -246,7 +257,7 @@ export default function PostContent({ post, toc, nextPost, prevPost }: Props) {
               href={`#comments`}
               className='opacity-80 hover:opacity-100 transition transition-smooth'
               style={{
-                marginLeft: `${(2 - 2) * 1.25}rem`,
+                marginLeft: `${(2 - highestHeadingLevel) * 1.25}rem`,
               }}
               onClick={(e) => {
                 e.preventDefault();
