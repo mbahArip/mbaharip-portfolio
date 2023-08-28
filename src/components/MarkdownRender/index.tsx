@@ -17,15 +17,15 @@ const customComponents: Partial<
 > = {
   img({ alt, src, ...props }: any) {
     return (
-      <div className='w-full flex flex-col gap-2 items-center'>
+      <span className='w-full flex flex-col gap-2 items-center'>
         <img
           src={src}
           alt={alt}
           className='w-full max-h-screen mx-auto object-cover rounded-lg border-4 border-zinc-300 bg-zinc-300 cursor-pointer'
           onClick={() => window.open(src, '_blank')}
         />
-        <span className='text-sm text-zinc-500'>{alt}</span>
-      </div>
+        <span className='text-sm text-zinc-400'>{alt}</span>
+      </span>
     );
   },
   a({ href, ...props }: any) {
