@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    @apply text-[14px] lg:text-base;
+    @apply m-0 box-border p-0;
+    @apply overflow-y-scroll bg-background font-sans text-foreground;
+  }
+  *::-webkit-scrollbar {
+    @apply h-1 w-1;
+  }
+  *::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    @apply bg-default hover:bg-primary active:bg-primary-200;
+  }
+
+  /* Force framer-motion to use linear */
+  *.transition-transform-background {
+    @apply ease-linear !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+  h1 {
+    @apply text-4xl lg:text-5xl;
+  }
+  h2 {
+    @apply text-3xl lg:text-4xl;
+  }
+  h3 {
+    @apply text-2xl lg:text-3xl;
+  }
+  h4 {
+    @apply text-xl lg:text-2xl;
+  }
+  h5 {
+    @apply text-lg lg:text-xl;
+  }
+  h6 {
+    @apply text-base lg:text-lg;
+  }
+}
+
+@layer components {
+  .background-overrides {
+    @apply bg-[var(--background-color)] !important;
+  }
+
+  .icon {
+    @apply p-2 transition duration-150;
+  }
+  .card.facebook {
+    @apply hover:bg-[#1877F2] !important;
+  }
+  .icon.facebook {
+    @apply group-hover:bg-[#1877F2] !important;
+  }
+  .card.github,
+  .card.x,
+  .card.dev {
+    @apply hover:bg-[#ecedee] hover:text-[#000] !important;
+  }
+  .icon.github,
+  .icon.x,
+  .icon.dev {
+    @apply group-hover:bg-[#ecedee] group-hover:text-[#000] !important;
+  }
+  .card.discord {
+    @apply hover:bg-[#5865F2] !important;
+  }
+  .icon.discord {
+    @apply group-hover:bg-[#5865F2] !important;
+  }
+  .card.linkedin {
+    @apply hover:bg-[#ecedee] hover:text-[#0A66C2] !important;
+  }
+  .icon.linkedin {
+    @apply group-hover:bg-[#ecedee] group-hover:fill-[#0A66C2] !important;
+  }
+}

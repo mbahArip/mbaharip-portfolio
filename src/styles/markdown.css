@@ -1,0 +1,87 @@
+@tailwind components;
+
+@layer components {
+  .markdown {
+    @apply bg-inherit leading-loose text-inherit;
+  }
+  .markdown div.paragraph {
+    @apply leading-loose;
+  }
+  .markdown strong,
+  .markdown b {
+    @apply font-bold;
+  }
+  .markdown h1 {
+    @apply mt-4 first-letter:capitalize;
+  }
+  .markdown h2 {
+    @apply mt-4 w-full pl-0 text-2xl;
+  }
+  .markdown h3 {
+    @apply mt-4 text-xl text-secondary;
+  }
+  .markdown h4 {
+    @apply text-lg text-primary;
+  }
+  .markdown h5 {
+    @apply text-base text-danger;
+  }
+
+  .markdown ul {
+    @apply list-disc leading-normal;
+  }
+
+  .markdown ol {
+    @apply list-decimal leading-normal;
+  }
+
+  .markdown li {
+    @apply ml-8;
+  }
+  .markdown li div.paragraph {
+    @apply my-1 leading-snug;
+  }
+
+  .markdown pre {
+    @apply text-small;
+  }
+
+  .markdown table {
+    @apply h-auto w-full min-w-full table-auto;
+  }
+  .markdown thead {
+    @apply [&>tr]:first:rounded-lg;
+  }
+  .markdown thead tr,
+  .markdown tbody tr {
+    @apply outline-none focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus;
+  }
+  .markdown thead tr th {
+    @apply h-10 cursor-default whitespace-nowrap bg-default-100 px-3 text-left align-middle text-tiny font-semibold text-foreground-500 outline-none first:rounded-l-lg last:rounded-r-lg focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus;
+  }
+  .markdown tbody tr td {
+    @apply relative whitespace-normal px-3 py-2 align-middle text-small font-normal outline-none before:absolute before:inset-0 before:z-0 before:bg-default/40 before:opacity-0 before:content-[''] first:before:rounded-l-lg last:before:rounded-r-lg focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus [&>*]:relative;
+  }
+
+  .markdown ul.contains-task-list {
+    @apply list-none;
+  }
+
+  .markdown ul.contains-task-list li {
+    @apply ml-1 flex items-center;
+  }
+  .markdown li.task-list-item {
+    @apply font-sans font-semibold;
+  }
+  .markdown li.task-list-item:has(input[type='checkbox'][checked]) {
+    @apply text-default-400 line-through;
+  }
+
+  .markdown hr {
+    @apply my-4 h-divider w-full shrink-0 border-none bg-divider;
+  }
+
+  .markdown blockquote {
+    @apply mt-4 rounded-r-medium border-l-large border-primary bg-content1 px-4 py-2 shadow-small;
+  }
+}

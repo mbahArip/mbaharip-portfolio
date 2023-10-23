@@ -1,0 +1,70 @@
+[
+  {
+    "name": "Browsing",
+    "color": "#e59215"
+  },
+  {
+    "name": "Building",
+    "color": "#e8ce3d"
+  },
+  {
+    "name": "Code Reviewing",
+    "color": "#34f5db"
+  },
+  {
+    "name": "Coding",
+    "color": "#1f9aef"
+  },
+  {
+    "name": "Communicating",
+    "color": "#6f2170"
+  },
+  {
+    "name": "Debugging",
+    "color": "#c49af9"
+  },
+  {
+    "name": "Designing",
+    "color": "#9061ca"
+  },
+  {
+    "name": "Indexing",
+    "color": "#fff09d"
+  },
+  {
+    "name": "Learning",
+    "color": "#38a2eb"
+  },
+  {
+    "name": "Manual Testing",
+    "color": "#34be61"
+  },
+  {
+    "name": "Meeting",
+    "color": "#fd1464"
+  },
+  {
+    "name": "Planning",
+    "color": "#ff4585"
+  },
+  {
+    "name": "Researching",
+    "color": "#4cbfc0"
+  },
+  {
+    "name": "Running Tests",
+    "color": "#ec5756"
+  },
+  {
+    "name": "Translating",
+    "color": null
+  },
+  {
+    "name": "Writing Docs",
+    "color": "#36e3ff"
+  },
+  {
+    "name": "Writing Tests",
+    "color": "#3cec76"
+  }
+]
