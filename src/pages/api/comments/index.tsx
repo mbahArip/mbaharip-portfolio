@@ -36,7 +36,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
       return response.status(401).json({ message: 'Failed to verify Captcha' });
     }
 
-    const { type, user_id, user_name, content, parent_id, reply_to, user_avatar, postId } =
+    const { type, user_id, user_name, content, parent_id, reply_to, user_avatar, postId, is_me } =
       request.body as DbCommentCreate & {
         postId: string;
         type: 'projects' | 'blogs' | 'stuff';
@@ -56,6 +56,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
         content,
         parent_id,
         is_published: true,
+        is_me,
         reply_to,
       })
       .select('*,reply_to:reply_to(*)')

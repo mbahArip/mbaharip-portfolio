@@ -94,7 +94,7 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
           transition={{ duration: 0.5, ease: 'easeInOut', type: 'tween' }}
           id='site-content'
           className={twMerge(
-            'center-max-xl mt-4 flex w-full flex-grow flex-col gap-4 overflow-y-hidden px-4',
+            'center-max-xl mt-4 flex w-full flex-grow flex-col gap-4 overflow-y-hidden px-4 pt-16',
             props.className && props.className,
           )}
         >

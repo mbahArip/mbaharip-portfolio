@@ -5,7 +5,10 @@
     @apply bg-inherit leading-loose text-inherit;
   }
   .markdown div.paragraph {
-    @apply leading-loose;
+    @apply whitespace-pre-wrap leading-loose;
+  }
+  .markdown-comment div.paragraph {
+    @apply whitespace-pre-wrap leading-normal;
   }
   .markdown strong,
   .markdown b {
@@ -82,6 +85,13 @@
   }
 
   .markdown blockquote {
-    @apply mt-4 rounded-r-medium border-l-large border-primary bg-content1 px-4 py-2 shadow-small;
+    @apply my-4 rounded-r-medium border-l-large border-primary bg-background/50 px-4 py-2 shadow-small;
+  }
+
+  .markdown-comment blockquote {
+    @apply my-2 rounded-medium border border-divider bg-background/50 p-2 shadow-small;
+  }
+  .markdown-comment blockquote div.paragraph {
+    @apply line-clamp-4 select-none;
   }
 }

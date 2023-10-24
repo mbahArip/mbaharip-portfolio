@@ -61,13 +61,15 @@ const chatItemMe = {
 
 const defaultChats: DbGuestbookResponse = {
   id: 0,
-  name: 'Arief Rachmawan',
+  name: 'mbaharip',
   avatar: c.GITHUB_AVATAR as string,
   is_me: true,
   created_at: new Date('2023-10-18 13:20:09.205404+00').toISOString(),
   updated_at: new Date('2023-10-18 13:20:09.205404+00').toISOString(),
   message: `Hello! Thank you for visiting my page!
-You can leave a message, question, or anything you want here.`,
+You can leave a message, question, or anything you want here.
+
+This page only allows plain text message, so it will not format your message.`,
 };
 
 interface GuestbookProps {
@@ -119,8 +121,9 @@ export default function Guestbook(props: GuestbookProps) {
 
       if (!session || !session.user) throw new Error('You need to be logged in to leave a message.');
 
-      const payload: DbGuestbookCreate = {
+      const payload: DbGuestbookCreate & { email?: string } = {
         name: session.user.name as string,
+        email: session.user.email ?? undefined,
         message: chatInput,
         avatar: session.user.image ?? null,
       };
@@ -138,7 +141,9 @@ export default function Guestbook(props: GuestbookProps) {
       toast.success('Message sent successfully!');
       setChatInput('');
 
-      setChats((prev) => [...prev, data]);
+      setChats((prev) =>
+        [...prev, data].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
+      );
     } catch (error: any) {
       console.error(error);
       toast.error('Failed to send message. Check console for details.');
@@ -306,38 +311,54 @@ function Chat(props: DbGuestbookResponse & { is_pinned?: boolean; compact?: bool
     return (
       <m.div
         variants={chatItem}
-        className={twMerge('flex items-start gap-4 px-2')}
+        className={twMerge(
+          'flex items-start gap-4 px-4',
+          props.is_pinned && 'flex-col gap-1 rounded-medium border border-divider px-4 py-2',
+        )}
       >
-        <Avatar
-          className='flex-shrink-0'
-          size='sm'
-          src={props.avatar as string}
-          name={props.name}
-          isBordered
-        />
-        <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
-          <div className='flex flex-col items-start'>
-            <span
-              className={twMerge(
-                'flex items-center gap-2 whitespace-nowrap text-tiny',
-                props.is_me ? 'text-primary' : 'text-default-500',
-              )}
-            >
-              {props.name}
-              <Icon
-                name='Pin'
-                size='xs'
-                className={props.is_pinned ? 'text-foreground' : 'invisible'}
-              />
-            </span>
-            <span className='mt-auto h-full whitespace-nowrap text-tiny text-default-400'>
-              {formatDate(props.created_at, {
-                hour: 'numeric',
-                minute: 'numeric',
-              })}
-            </span>
+        {props.is_pinned && (
+          <div className='flex items-center gap-1'>
+            <Icon
+              name='Pin'
+              className='flex-shrink-0'
+            />
+            <h6>Pinned message</h6>
           </div>
-          <p className='flex-grow whitespace-pre-wrap break-words text-small'>{props.message}</p>
+        )}
+        <div className='flex items-start gap-4'>
+          <Avatar
+            className='flex-shrink-0'
+            size='sm'
+            src={props.is_me ? c.GITHUB_AVATAR : (props.avatar as string) || undefined}
+            name={props.name}
+            isBordered
+          />
+          <div className='flex flex-col gap-2 md:flex-row md:gap-4'>
+            <div className='flex flex-col items-start'>
+              <span
+                className={twMerge(
+                  'flex items-center gap-1 whitespace-nowrap text-tiny',
+                  props.is_me ? 'text-success' : 'text-default-500',
+                )}
+              >
+                {props.name}
+                {props.is_me && (
+                  <Icon
+                    name='CheckCircle'
+                    size='xs'
+                    tooltip='Admin'
+                  />
+                )}
+              </span>
+              <span className='mt-auto h-full whitespace-nowrap text-tiny text-default-400'>
+                {formatDate(props.created_at, {
+                  hour: 'numeric',
+                  minute: 'numeric',
+                })}
+              </span>
+            </div>
+            <p className='whitespace-pre-wrap break-words text-small'>{props.message}</p>
+          </div>
         </div>
       </m.div>
     );

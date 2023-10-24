@@ -6,23 +6,23 @@ import MarkdownRender from 'components/MarkdownRender';
 import supabase from 'utils/client/supabase';
 import { createPostId, getPostId } from 'utils/postIdHelper';
 
-import { DbProjectResponse } from 'types/Supabase';
+import { DbBlogResponse } from 'types/Supabase';
 
-interface ProjectDetailsProps {
-  project: DbProjectResponse;
+interface BlogDetailsProps {
+  blog: DbBlogResponse;
 }
-export default function ProjectDetails(props: ProjectDetailsProps) {
+export default function BlogDetails(props: BlogDetailsProps) {
   return (
     <>
       <PostLayout
         seo={{
-          title: props.project.title,
-          description: props.project.summary,
+          title: props.blog.title,
+          description: props.blog.summary,
         }}
-        type='projects'
-        data={props.project}
+        type='blogs'
+        data={props.blog}
       >
-        <MarkdownRender>{props.project.content}</MarkdownRender>
+        <MarkdownRender>{props.blog.content}</MarkdownRender>
       </PostLayout>
     </>
   );
@@ -36,8 +36,8 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   if (!postId || !title) return { notFound: true };
 
   const data = await supabase
-    .from('projects')
-    .select('*, stacks:master_stack(*), comments:comments(*, reply_to:reply_to(*))')
+    .from('blogs')
+    .select('*, tags:master_tag(*), comments:comments(*, reply_to:reply_to(*))')
     .match({
       id: postId,
     })
@@ -46,7 +46,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
   if (data.error) throw new Error(data.error.message);
   if (data.count === 0) return { notFound: true };
 
-  const dataResponse: DbProjectResponse = {
+  const dataResponse: DbBlogResponse = {
     id: data.data.id,
     title: data.data.title,
     summary: data.data.summary,
@@ -54,11 +54,10 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     created_at: data.data.created_at,
     updated_at: data.data.updated_at,
     thumbnail_url: data.data.thumbnail_url,
-    source_url: data.data.source_url ?? null,
-    demo_url: data.data.demo_url ?? null,
+
     is_featured: data.data.is_featured,
     views: data.data.views,
-    stacks: data.data.stacks,
+    tags: data.data.tags,
     comments: data.data.comments,
   };
 
@@ -79,20 +78,20 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 
   return {
     props: {
-      project: dataResponse,
+      blog: dataResponse,
     },
     revalidate: 60,
   };
 }
 
 export async function getStaticPaths() {
-  const data = await supabase.from('projects').select('id,title');
+  const data = await supabase.from('blogs').select('id,title');
   if (data.error) throw new Error(data.error.message);
   if (data.count === 0) return { notFound: true };
 
-  const paths = data.data.map((project) => ({
+  const paths = data.data.map((blog) => ({
     params: {
-      id: createPostId(project.id, project.title),
+      id: createPostId(blog.id, blog.title),
     },
   }));
 

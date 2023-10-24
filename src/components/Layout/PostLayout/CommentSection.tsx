@@ -7,6 +7,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { toast } from 'react-toastify';
 import { twMerge } from 'tailwind-merge';
 
+import Icon from 'components/Icons';
 import Link from 'components/Link';
 
 import createUserId from 'utils/createUserId';
@@ -75,12 +76,14 @@ export default function PostLayoutCommentSection(props: PostLayoutCommentSection
     } = {
       postId: props.post.id,
       type: props.post.type,
-      user_id: createUserId(session?.user?.name as string, session?.user?.email),
+      user_id: createUserId(session) as string,
       user_name: session?.user?.name as string,
       user_avatar: session?.user?.image ?? null,
       content: value,
       parent_id: replyParent ?? null,
       reply_to: isReplying?.id ?? null,
+      is_me:
+        session.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && session.user?.name === 'mbaharip' ? true : false,
     };
 
     const res = await axios
@@ -103,7 +106,25 @@ export default function PostLayoutCommentSection(props: PostLayoutCommentSection
     <>
       {/* Comment Section Start */}
       <div className='center-max-xl flex flex-col justify-between md:flex-row md:items-end'>
-        <h5>Comments ({props.comments.length})</h5>
+        <div className='flex items-center gap-2'>
+          <h5>Comments ({props.comments.length})</h5>
+          {session && (
+            <Button
+              as={Link}
+              href='#comment'
+              variant='flat'
+              size='sm'
+              startContent={
+                <Icon
+                  name='Plus'
+                  size='sm'
+                />
+              }
+            >
+              Add comment
+            </Button>
+          )}
+        </div>
 
         {session ? (
           <div className='flex items-center gap-1 text-small'>
@@ -132,7 +153,7 @@ export default function PostLayoutCommentSection(props: PostLayoutCommentSection
       {/* Comments */}
       <div className='flex w-full flex-col gap-4'>
         {props.comments.length === 0 && (
-          <span className='w-full py-4 text-center text-large'>
+          <span className='w-full py-8 text-center text-small'>
             There are no comments yet. Be the first to comment!
           </span>
         )}
@@ -208,13 +229,14 @@ export default function PostLayoutCommentSection(props: PostLayoutCommentSection
       {/* New comments */}
       {session ? (
         <CommentInput
+          id='comment'
           waitingCaptcha={waitingForCaptcha}
           handleSubmit={handlePostComment}
         />
       ) : (
         <div
           id='login'
-          className='flex w-full flex-col gap-4 md:flex-row'
+          className='grid grid-cols-1 gap-4 md:grid-cols-2'
         >
           <Button
             size='lg'

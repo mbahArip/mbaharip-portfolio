@@ -33,7 +33,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
       return response.status(401).json({ message: 'Failed to verify Captcha' });
     }
 
-    const { name, message, avatar } = request.body as DbGuestbookCreate;
+    const { name, email, message, avatar } = request.body as DbGuestbookCreate & { email?: string };
     if (!name || !message) {
       return response.status(400).json({ message: 'One or more fields are missing' });
     }
@@ -50,7 +50,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
         name,
         message,
         avatar,
-        is_me: false,
+        is_me: email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && name === 'mbaharip',
       })
       .select('*')
       .single();

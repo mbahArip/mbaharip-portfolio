@@ -80,7 +80,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           <NextUIProvider>
             <div
               className={twMerge(
-                `relative flex min-h-screen w-full max-w-[100vw] flex-col items-center justify-between overflow-x-hidden font-sans`,
+                `relative flex h-fit max-h-fit min-h-screen w-full max-w-[100vw] flex-col items-center justify-between overflow-x-hidden font-sans`,
               )}
             >
               <ToastContainer {...toastConfig} />

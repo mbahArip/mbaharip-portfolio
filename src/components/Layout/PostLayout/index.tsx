@@ -12,7 +12,7 @@ import { DbBlogResponse, DbCommentResponse, DbProjectResponse, DbStuffResponse }
 import PostLayoutCommentSection from './CommentSection';
 import PostLayoutHeader from './Header';
 
-interface DefaultLayoutProps {
+interface PostLayoutProps {
   seo?: NextSeoProps;
   defaultState?: State;
   data: DbBlogResponse | DbProjectResponse | DbStuffResponse;
@@ -21,7 +21,7 @@ interface DefaultLayoutProps {
   children: React.ReactNode;
 }
 
-export default function DefaultLayout(props: DefaultLayoutProps) {
+export default function PostLayout(props: PostLayoutProps) {
   const router = useRouter();
 
   const [pageState, setPageState] = useState<State>(props.defaultState ?? 'loading');
@@ -110,7 +110,7 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
             transition={{ duration: 0.5, ease: 'easeInOut', type: 'tween', delay: c.ANIM_DELAY * 3 }}
             id='site-content'
             className={twMerge(
-              'center-max-xl z-20 mt-[41vh] flex w-full flex-grow flex-col gap-4 overflow-y-hidden px-2 lg:mt-[55vh]',
+              'center-max-xl z-20 flex w-full flex-grow flex-col gap-4 overflow-y-hidden px-2',
               props.className && props.className,
             )}
           >

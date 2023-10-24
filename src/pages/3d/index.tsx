@@ -11,7 +11,7 @@ import supabase from 'utils/client/supabase';
 import { buildPagination } from 'utils/supabaseHelper';
 
 import { State } from 'types/Common';
-import { DbProjectResponseSummary } from 'types/Supabase';
+import { DbStuffResponseSummary } from 'types/Supabase';
 
 const cardContainer = {
   hidden: {
@@ -40,14 +40,14 @@ const cardItem = {
   },
 };
 interface ProjectsPageProps {
-  projects: DbProjectResponseSummary[];
+  stuff: DbStuffResponseSummary[];
   totalData: number;
 }
 export default function ProjectsPage(props: ProjectsPageProps) {
   const [loadMoreState, setLoadMoreState] = useState<State>('idle');
-  const [data, setData] = useState<DbProjectResponseSummary[]>(props.projects);
+  const [data, setData] = useState<DbStuffResponseSummary[]>(props.stuff);
   const [page, setPage] = useState<number>(1);
-  const [isNextPage, setIsNextPage] = useState<boolean>(props.projects.length < props.totalData);
+  const [isNextPage, setIsNextPage] = useState<boolean>(props.stuff.length < props.totalData);
 
   const handleNextPage = async () => {
     setLoadMoreState('loading');
@@ -55,9 +55,9 @@ export default function ProjectsPage(props: ProjectsPageProps) {
       const qPage = page + 1;
       const pagination = buildPagination(qPage, 1);
       const res = await supabase
-        .from('projects')
+        .from('stuff')
         .select(
-          'id,created_at,updated_at,title,summary,is_featured,views,thumbnail_url,comments:comments(count),stacks:master_stack(*)',
+          'id,created_at,updated_at,title,summary,is_nsfw,views,thumbnail_url,image_urls,video_urls,sketchfab_url,comments:comments(count),tags:master_tag(*)',
           {
             count: 'exact',
           },
@@ -68,22 +68,25 @@ export default function ProjectsPage(props: ProjectsPageProps) {
 
       if (res.error) throw new Error(res.error.message);
 
-      const projectResponse: DbProjectResponseSummary[] = res.data
-        ? res.data.map((project) => ({
-            id: project.id,
-            created_at: project.created_at,
-            updated_at: project.updated_at,
-            title: project.title,
-            summary: project.summary,
-            thumbnail_url: project.thumbnail_url,
-            is_featured: project.is_featured,
-            views: project.views,
-            comments: (project.comments[0] as any).count,
-            stacks: project.stacks,
+      const stuffResponse: DbStuffResponseSummary[] = res.data
+        ? res.data.map((stuff) => ({
+            id: stuff.id,
+            created_at: stuff.created_at,
+            updated_at: stuff.updated_at,
+            title: stuff.title,
+            summary: stuff.summary,
+            thumbnail_url: stuff.thumbnail_url,
+            views: stuff.views,
+            comments: (stuff.comments[0] as any).count,
+            tags: stuff.tags,
+            is_nsfw: stuff.is_nsfw,
+            is_images: stuff.image_urls ? stuff.image_urls.length > 0 : false,
+            is_videos: stuff.video_urls ? stuff.video_urls.length > 0 : false,
+            is_sketchfab: stuff.sketchfab_url ? true : false,
           }))
         : [];
 
-      const newData = [...data, ...projectResponse];
+      const newData = [...data, ...stuffResponse];
 
       setData(newData);
       setPage(qPage);
@@ -133,12 +136,12 @@ export default function ProjectsPage(props: ProjectsPageProps) {
         animate={'show'}
         className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
       >
-        {data.map((project) => (
+        {data.map((stuff) => (
           <m.div
             variants={cardItem}
-            key={project.id}
+            key={stuff.id}
           >
-            <PostCard project={project} />
+            <PostCard stuff={stuff} />
           </m.div>
         ))}
         {isNextPage && (
@@ -161,37 +164,39 @@ export default function ProjectsPage(props: ProjectsPageProps) {
 
 export async function getServerSideProps() {
   const res = await supabase
-    .from('projects')
+    .from('stuff')
     .select(
-      'id,created_at,updated_at,title,summary,is_featured,views,thumbnail_url,comments:comments(count),stacks:master_stack(*)',
+      'id,created_at,updated_at,title,summary,is_nsfw,views,thumbnail_url,image_urls,video_urls,sketchfab_url,comments:comments(count),tags:master_tag(*)',
       {
         count: 'exact',
       },
     )
-    .order('is_featured', { ascending: false })
     .order('created_at', { ascending: false })
     .range(0, 24);
 
   if (res.error) throw new Error(res.error.message);
 
-  const projectResponse: DbProjectResponseSummary[] = res.data
-    ? res.data.map((project) => ({
-        id: project.id,
-        created_at: project.created_at,
-        updated_at: project.updated_at,
-        title: project.title,
-        summary: project.summary,
-        thumbnail_url: project.thumbnail_url,
-        is_featured: project.is_featured,
-        views: project.views,
-        comments: (project.comments[0] as any).count,
-        stacks: project.stacks,
+  const stuffResponse: DbStuffResponseSummary[] = res.data
+    ? res.data.map((stuff) => ({
+        id: stuff.id,
+        created_at: stuff.created_at,
+        updated_at: stuff.updated_at,
+        title: stuff.title,
+        summary: stuff.summary,
+        thumbnail_url: stuff.thumbnail_url,
+        views: stuff.views,
+        comments: (stuff.comments[0] as any).count,
+        tags: stuff.tags,
+        is_nsfw: stuff.is_nsfw,
+        is_images: stuff.image_urls ? stuff.image_urls.length > 0 : false,
+        is_videos: stuff.video_urls ? stuff.video_urls.length > 0 : false,
+        is_sketchfab: stuff.sketchfab_url ? true : false,
       }))
     : [];
 
   return {
     props: {
-      projects: projectResponse,
+      stuff: stuffResponse,
       totalData: res.count ?? 0,
     },
   };

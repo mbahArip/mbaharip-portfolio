@@ -11,7 +11,7 @@ import supabase from 'utils/client/supabase';
 import { buildPagination } from 'utils/supabaseHelper';
 
 import { State } from 'types/Common';
-import { DbProjectResponseSummary } from 'types/Supabase';
+import { DbBlogResponseSummary } from 'types/Supabase';
 
 const cardContainer = {
   hidden: {
@@ -39,15 +39,15 @@ const cardItem = {
     },
   },
 };
-interface ProjectsPageProps {
-  projects: DbProjectResponseSummary[];
+interface BlogsPageProps {
+  blogs: DbBlogResponseSummary[];
   totalData: number;
 }
-export default function ProjectsPage(props: ProjectsPageProps) {
+export default function BlogsPage(props: BlogsPageProps) {
   const [loadMoreState, setLoadMoreState] = useState<State>('idle');
-  const [data, setData] = useState<DbProjectResponseSummary[]>(props.projects);
+  const [data, setData] = useState<DbBlogResponseSummary[]>(props.blogs);
   const [page, setPage] = useState<number>(1);
-  const [isNextPage, setIsNextPage] = useState<boolean>(props.projects.length < props.totalData);
+  const [isNextPage, setIsNextPage] = useState<boolean>(props.blogs.length < props.totalData);
 
   const handleNextPage = async () => {
     setLoadMoreState('loading');
@@ -55,42 +55,41 @@ export default function ProjectsPage(props: ProjectsPageProps) {
       const qPage = page + 1;
       const pagination = buildPagination(qPage, 1);
       const res = await supabase
-        .from('projects')
+        .from('blogs')
         .select(
-          'id,created_at,updated_at,title,summary,is_featured,views,thumbnail_url,comments:comments(count),stacks:master_stack(*)',
+          'id,created_at,updated_at,title,summary,is_featured,views,thumbnail_url,comments:comments(count),tags:master_tag(*)',
           {
             count: 'exact',
           },
         )
-        .order('is_featured', { ascending: false })
         .order('created_at', { ascending: false })
         .range(pagination.from, pagination.to);
 
       if (res.error) throw new Error(res.error.message);
 
-      const projectResponse: DbProjectResponseSummary[] = res.data
-        ? res.data.map((project) => ({
-            id: project.id,
-            created_at: project.created_at,
-            updated_at: project.updated_at,
-            title: project.title,
-            summary: project.summary,
-            thumbnail_url: project.thumbnail_url,
-            is_featured: project.is_featured,
-            views: project.views,
-            comments: (project.comments[0] as any).count,
-            stacks: project.stacks,
+      const blogResponse: DbBlogResponseSummary[] = res.data
+        ? res.data.map((blog) => ({
+            id: blog.id,
+            created_at: blog.created_at,
+            updated_at: blog.updated_at,
+            title: blog.title,
+            summary: blog.summary,
+            thumbnail_url: blog.thumbnail_url,
+            is_featured: blog.is_featured,
+            views: blog.views,
+            comments: (blog.comments[0] as any).count,
+            tags: blog.tags,
           }))
         : [];
 
-      const newData = [...data, ...projectResponse];
+      const newData = [...data, ...blogResponse];
 
       setData(newData);
       setPage(qPage);
       setIsNextPage(newData.length < props.totalData);
     } catch (error: any) {
       console.error(error);
-      toast.error('Failed to load more projects');
+      toast.error('Failed to load more blogs');
     } finally {
       setLoadMoreState('idle');
     }
@@ -105,7 +104,7 @@ export default function ProjectsPage(props: ProjectsPageProps) {
       {/* Header */}
       <div className='center-max-xl flex flex-col items-center justify-center gap-8'>
         <div className='flex w-full flex-col items-start'>
-          <h1>Projects</h1>
+          <h1>Blogs</h1>
           <m.span
             initial={{
               opacity: 0,
@@ -122,7 +121,7 @@ export default function ProjectsPage(props: ProjectsPageProps) {
             }}
             className='text-small text-default-500'
           >
-            Projects I&apos;ve worked on.
+            Posts about my journey and experience or just random thoughts.
           </m.span>
         </div>
       </div>
@@ -131,14 +130,17 @@ export default function ProjectsPage(props: ProjectsPageProps) {
         variants={cardContainer}
         initial={'hidden'}
         animate={'show'}
-        className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
+        className='grid grid-cols-1 gap-4 md:grid-cols-2'
       >
-        {data.map((project) => (
+        {data.map((blog) => (
           <m.div
             variants={cardItem}
-            key={project.id}
+            key={blog.id}
           >
-            <PostCard project={project} />
+            <PostCard
+              blog={blog}
+              forceCompact
+            />
           </m.div>
         ))}
         {isNextPage && (
@@ -161,37 +163,36 @@ export default function ProjectsPage(props: ProjectsPageProps) {
 
 export async function getServerSideProps() {
   const res = await supabase
-    .from('projects')
+    .from('blogs')
     .select(
-      'id,created_at,updated_at,title,summary,is_featured,views,thumbnail_url,comments:comments(count),stacks:master_stack(*)',
+      'id,created_at,updated_at,title,summary,is_featured,views,thumbnail_url,comments:comments(count),tags:master_tag(*)',
       {
         count: 'exact',
       },
     )
-    .order('is_featured', { ascending: false })
     .order('created_at', { ascending: false })
     .range(0, 24);
 
   if (res.error) throw new Error(res.error.message);
 
-  const projectResponse: DbProjectResponseSummary[] = res.data
-    ? res.data.map((project) => ({
-        id: project.id,
-        created_at: project.created_at,
-        updated_at: project.updated_at,
-        title: project.title,
-        summary: project.summary,
-        thumbnail_url: project.thumbnail_url,
-        is_featured: project.is_featured,
-        views: project.views,
-        comments: (project.comments[0] as any).count,
-        stacks: project.stacks,
+  const blogResponse: DbBlogResponseSummary[] = res.data
+    ? res.data.map((blog) => ({
+        id: blog.id,
+        created_at: blog.created_at,
+        updated_at: blog.updated_at,
+        title: blog.title,
+        summary: blog.summary,
+        thumbnail_url: blog.thumbnail_url,
+        is_featured: blog.is_featured,
+        views: blog.views,
+        comments: (blog.comments[0] as any).count,
+        tags: blog.tags,
       }))
     : [];
 
   return {
     props: {
-      projects: projectResponse,
+      blogs: blogResponse,
       totalData: res.count ?? 0,
     },
   };

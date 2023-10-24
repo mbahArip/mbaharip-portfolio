@@ -418,7 +418,7 @@ export default function Home({ users, about, latestProject, latestBlog, latest3D
           variants={latestContainer}
           initial={'hidden'}
           animate={'show'}
-          className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+          className='grid grid-cols-1 gap-4 lg:grid-cols-2'
         >
           {latestBlog.length === 0 ? (
             <span className='col-span-full py-8 text-center text-default-400'>
@@ -437,7 +437,10 @@ export default function Home({ users, about, latestProject, latestBlog, latest3D
                       key={blog.id}
                       variants={latestItem}
                     >
-                      <PostCard blog={blog} />
+                      <PostCard
+                        blog={blog}
+                        forceCompact
+                      />
                     </m.div>
                   ))}
                 </>
@@ -523,7 +526,7 @@ export default function Home({ users, about, latestProject, latestBlog, latest3D
           variants={latestContainer}
           initial={'hidden'}
           animate={'show'}
-          className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+          className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
         >
           {latestProject.length === 0 ? (
             <span className='col-span-full py-8 text-center text-default-400'>
@@ -620,7 +623,7 @@ export default function Home({ users, about, latestProject, latestBlog, latest3D
           variants={latestContainer}
           initial={'hidden'}
           animate={'show'}
-          className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+          className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
         >
           {latest3D.length === 0 ? (
             <span className='col-span-full py-8 text-center text-default-400'>
@@ -656,7 +659,7 @@ export async function getServerSideProps() {
       },
     )
     .order('created_at', { ascending: false })
-    .limit(4);
+    .limit(2);
   const _blog = supabase
     .from('blogs')
     .select(

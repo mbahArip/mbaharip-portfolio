@@ -53,7 +53,7 @@ export default function PostLayoutHeader({ data, type, comments }: PostLayoutHea
         duration: 0.5,
         ease: 'easeInOut',
       }}
-      className='absolute left-0 top-0 z-20 h-[50vh] w-full lg:h-[65vh]'
+      className='relative left-0 top-0 z-20 h-[50vh] w-full lg:h-[65vh]'
     >
       <Image
         src={getOptimizedImage(data.thumbnail_url, {
@@ -71,7 +71,7 @@ export default function PostLayoutHeader({ data, type, comments }: PostLayoutHea
       <div className='absolute left-0 top-0 z-10 h-full w-full bg-gradient-to-b from-transparent via-background/75 to-background' />
       <div className='center-max-xl absolute left-1/2 top-20 z-20 -translate-x-1/2 px-2'>
         <Link
-          href={`/${type}`}
+          href={`/${type === 'stuff' ? '3d' : type}`}
           className='w-fit gap-1 rounded-medium bg-primary-50/50 px-2 backdrop-blur'
         >
           <Icon name='ArrowLeftCircle' />

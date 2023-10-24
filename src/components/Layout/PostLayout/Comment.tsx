@@ -86,10 +86,10 @@ export default function Comment({ data, className, reply, onReplyButtonClick }: 
       const payload: DbReportCreate = {
         comment_id: data.id,
         reason,
-        reported_by: createUserId(session?.user?.name as string, session?.user?.email),
+        reported_by: createUserId(session) as string,
       };
 
-      const res = await axios.post('/api/comments/report', payload).then((res) => res.data);
+      await axios.post('/api/comments/report', payload).then((res) => res.data);
 
       setReason('');
       modal.onClose();
@@ -130,36 +130,57 @@ export default function Comment({ data, className, reply, onReplyButtonClick }: 
         }}
       >
         <CardHeader>
-          <span className='font-bold'>{data.user_name}</span>
+          <span
+            className={twMerge(
+              'flex items-center gap-2 font-bold',
+              data.is_me && 'text-success',
+              data.user_id === createUserId(session) && !data.is_me && 'text-primary',
+            )}
+          >
+            {data.user_name}{' '}
+            {data.is_me && (
+              <Chip
+                color='success'
+                variant='shadow'
+                classNames={{
+                  base: 'h-fit px-2 py-px gap-1',
+                  content: 'text-tiny px-0 font-medium',
+                }}
+                startContent={
+                  <Icon
+                    name='CheckCircle'
+                    size='xs'
+                  />
+                }
+              >
+                Author
+              </Chip>
+            )}
+            {data.user_id === createUserId(session) && !data.is_me && <span className='text-tiny'>(You)</span>}
+          </span>
           <span className='select-none text-tiny font-semibold text-default-400'>#{data.id}</span>
         </CardHeader>
         <CardBody>
           {data.reply_to && (data.reply_to as DbRow<'comments'>).id !== data.id && (
-            <span className='flex items-center gap-1 text-tiny text-default-400'>
-              Replying to{' '}
-              {(data.reply_to as DbRow<'comments'>).user_id === data.user_id ? (
-                <span
-                  className='cursor-pointer font-bold'
-                  onClick={() => {
-                    const el = document.getElementById((data.reply_to as DbRow<'comments'>).id);
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      el.focus();
-                      el.dataset.highlight = 'true';
-                    }
-                  }}
-                >
-                  his/her own comment
-                </span>
-              ) : (
+            <>
+              <span className='flex items-center gap-1 text-tiny text-default-400'>
+                Replying to{' '}
                 <Chip
-                  color='secondary'
+                  variant='light'
+                  color='primary'
                   size='sm'
                   classNames={{
-                    base: 'cursor-pointer h-fit px-0.5',
-                    content: 'text-tiny',
+                    base: 'cursor-pointer h-fit px-0',
+                    content: 'text-tiny px-0 font-semibold',
                   }}
-                  onClick={() => {
+                  endContent={
+                    <Icon
+                      name='ArrowRight'
+                      size='xs'
+                      className='ml-1'
+                    />
+                  }
+                  onClick={async () => {
                     const el = document.getElementById((data.reply_to as DbRow<'comments'>).id);
                     if (el) {
                       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -168,10 +189,15 @@ export default function Comment({ data, className, reply, onReplyButtonClick }: 
                     }
                   }}
                 >
-                  {(data.reply_to as DbRow<'comments'>).user_name}
+                  {(data.reply_to as DbRow<'comments'>).user_id === data.user_id
+                    ? 'his/her own comment'
+                    : (data.reply_to as DbRow<'comments'>).user_name}
                 </Chip>
-              )}
-            </span>
+              </span>
+            </>
+          )}
+          {data.reply_to && (
+            <MarkdownRender isComments>{`> ${(data.reply_to as DbRow<'comments'>).content}`}</MarkdownRender>
           )}
           <MarkdownRender isComments>{data.content}</MarkdownRender>
         </CardBody>
@@ -223,7 +249,7 @@ export default function Comment({ data, className, reply, onReplyButtonClick }: 
             >
               {isCopied ? 'Link copied' : isCopyError ? 'Failed to copy' : 'Copy comment link'}
             </Button>
-            {session && data.user_id !== createUserId(session?.user?.name as string, session?.user?.email) && (
+            {session && data.user_id !== createUserId(session) && (
               <Button
                 size='sm'
                 variant='light'
@@ -271,9 +297,7 @@ export default function Comment({ data, className, reply, onReplyButtonClick }: 
                 <ModalBody>
                   <div className='flex items-center gap-1 text-tiny'>
                     <span className='font-bold'>Your ID:</span>
-                    <span className='text-default-500'>
-                      {createUserId(session?.user?.name as string, session?.user?.email)}
-                    </span>
+                    <span className='text-default-500'>{createUserId(session)}</span>
                   </div>
                   <div className='flex items-center gap-1 text-tiny'>
                     <span className='font-bold'>Comment ID:</span>
