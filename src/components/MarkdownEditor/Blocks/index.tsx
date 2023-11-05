@@ -1,3 +1,5 @@
+export { default as TaskList } from './TaskList';
+
 export { default as EmbedURL } from './EmbedUrl';
 export { default as File } from './File';
 export { default as Image } from './Image';

@@ -31,7 +31,7 @@ function Render(props: RenderProps) {
         ease: 'easeInOut',
         type: 'tween',
       }}
-      className='w-full flex-grow border-l-4 border-primary bg-background/25 px-3 py-2 pl-5 text-large'
+      className='w-full flex-grow border-l-4 border-primary bg-background/25 px-3 py-2 pl-5'
     >
       <InlineContent className='flex-grow' />
     </m.blockquote>

@@ -192,9 +192,15 @@ function Render(props: RenderProps) {
         />
         <div className='flex w-full flex-grow items-center justify-between gap-2'>
           <div className='flex flex-grow flex-col items-start'>
-            <span className='line-clamp-1 max-w-sm'>{uploadFile ? uploadFile.name : 'No file selected'}</span>
+            <span className='line-clamp-1 max-w-sm'>
+              {props.block.props.name ? props.block.props.name : uploadFile ? uploadFile.name : 'No file selected'}
+            </span>
             <span className='text-tiny text-default-500'>
-              {uploadFile ? formatBytes(uploadFile.size) : formatBytes(0)}
+              {props.block.props.size
+                ? formatBytes(props.block.props.size)
+                : uploadFile
+                ? formatBytes(uploadFile.size)
+                : formatBytes(0)}
             </span>
           </div>
           <Button
