@@ -29,10 +29,10 @@ import getOptimizedImage from 'utils/getOptimizedImage';
 
 import { WakaStats } from 'types/Api';
 
-import dataPCSpecs from 'data/pc-spec';
 import dataSkills from 'data/skills';
 import categoryColors from 'data/waka-colors/category.json';
 import languageColors from 'data/waka-colors/lang.json';
+import dataWorkspaces from 'data/workspace';
 
 const skillsContainer = {
   hidden: {
@@ -624,9 +624,23 @@ export default function About() {
                 </h5>
                 <Divider />
                 <ul>
-                  {dataPCSpecs.map((item) => (
-                    <li key={item.title}>
-                      <b>{item.title}</b>: {item.value}
+                  {dataWorkspaces.specs.map((item) => (
+                    <li
+                      key={item.title}
+                      className='flex items-start gap-4'
+                    >
+                      <span className='whitespace-nowrap'>
+                        <b>{item.title}</b>
+                      </span>
+                      <Link
+                        as={!item.url ? 'span' : undefined}
+                        href={item.url ?? undefined}
+                        isExternal
+                        color={item.url ? 'primary' : 'foreground'}
+                        className={twMerge(!item.url && 'hover:opacity-100')}
+                      >
+                        {item.value}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -640,18 +654,25 @@ export default function About() {
                 </h5>
                 <Divider />
                 <ul>
-                  <li>
-                    <b>Primary Monitor</b>: LG 25UM58-P 25&quot; UltraWide IPS LED Monitor
-                  </li>
-                  <li>
-                    <b>Secondary Monitor</b>: BenQ G610HDAL 15.6&quot; LED Monitor
-                  </li>
-                  <li>
-                    <b>Keyboard</b>: Keychron K2 with Custom Gateron brown 78g
-                  </li>
-                  <li>
-                    <b>Mouse</b>: Logitech MX Master 3
-                  </li>
+                  {dataWorkspaces.peripherals.map((item) => (
+                    <li
+                      key={item.title}
+                      className='flex items-start gap-4'
+                    >
+                      <span className='whitespace-nowrap'>
+                        <b>{item.title}</b>
+                      </span>
+                      <Link
+                        as={!item.url ? 'span' : undefined}
+                        href={item.url ?? undefined}
+                        isExternal
+                        color={item.url ? 'primary' : 'foreground'}
+                        className={twMerge(!item.url && 'hover:opacity-100')}
+                      >
+                        {item.value}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </m.div>
               <m.div
@@ -663,21 +684,25 @@ export default function About() {
                 </h5>
                 <Divider />
                 <ul>
-                  <li>
-                    <b>Interface</b>: Behringer U-phoria UMC22
-                  </li>
-                  <li>
-                    <b>Microphone</b>: Taff Studio LGT240
-                  </li>
-                  <li>
-                    <b>Headphones</b>: Audio Technica ATH-M40x
-                  </li>
-                  <li>
-                    <b>Earphone</b>: Kz CCA CRA
-                  </li>
-                  <li>
-                    <b>Speaker</b>: Logitech Z213
-                  </li>
+                  {dataWorkspaces.audio.map((item) => (
+                    <li
+                      key={item.title}
+                      className='flex items-start gap-4'
+                    >
+                      <span className='whitespace-nowrap'>
+                        <b>{item.title}</b>
+                      </span>
+                      <Link
+                        as={!item.url ? 'span' : undefined}
+                        href={item.url ?? undefined}
+                        isExternal
+                        color={item.url ? 'primary' : 'foreground'}
+                        className={twMerge(!item.url && 'hover:opacity-100')}
+                      >
+                        {item.value}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </m.div>
               <m.div
@@ -689,18 +714,25 @@ export default function About() {
                 </h5>
                 <Divider />
                 <ul>
-                  <li>
-                    <b>Gamepad</b>: Rexus Daxa AX1 Asteria
-                  </li>
-                  <li>
-                    <b>Merch#1</b>: PACIFIC RACING TEAM x ぶいすぽっ！ 小森めと Acrylic Stand
-                  </li>
-                  <li>
-                    <b>Merch#2</b>: PACIFIC RACING TEAM x ぶいすぽっ！ 小森めと Number Plate
-                  </li>
-                  <li>
-                    <b>Merch#3</b>: BanG Dream! Shirokane Rinko SEGA Figure
-                  </li>
+                  {dataWorkspaces.other.map((item) => (
+                    <li
+                      key={item.title}
+                      className='flex items-start gap-4'
+                    >
+                      <span className='whitespace-nowrap'>
+                        <b>{item.title}</b>
+                      </span>
+                      <Link
+                        as={!item.url ? 'span' : undefined}
+                        href={item.url ?? undefined}
+                        isExternal
+                        color={item.url ? 'primary' : 'foreground'}
+                        className={twMerge(!item.url && 'hover:opacity-100')}
+                      >
+                        {item.value}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </m.div>
             </m.div>

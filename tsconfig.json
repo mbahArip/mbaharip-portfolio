@@ -15,13 +15,17 @@
     "incremental": true,
     "paths": {
       "constant": ["./src/constant"],
+      "constant/*": ["./src/constant/*"],
       "components/*": ["./src/components/*"],
       "contexts/*": ["./src/contexts/*"],
       "config/*": ["./src/config/*"],
       "data/*": ["./src/data/*"],
+      "hooks/*": ["./src/hooks/*"],
       "styles/*": ["./src/styles/*"],
       "utils/*": ["./src/utils/*"],
-      "types/*": ["./src/types/*"]
+      "types/*": ["./src/types/*"],
+      "supabase/controller/*": ["./src/supabase/controller/*"],
+      "supabase/helper": ["./src/supabase/helper"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

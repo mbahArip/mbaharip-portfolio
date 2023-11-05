@@ -60,47 +60,49 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
   return (
     <>
       <NextSeo {...props.seo} />
-      {pageState === 'loading' ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            duration: 0.25,
-            ease: 'easeInOut',
-            type: 'tween',
-          }}
-          key={'loading'}
-          className='grid h-full w-full flex-grow place-items-center'
-        >
-          <video
-            className='h-32 w-32'
-            autoPlay
-            loop
-            muted
+      <div className='flex h-full min-h-fit w-full flex-grow overflow-y-hidden'>
+        {pageState === 'loading' ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 0.25,
+              ease: 'easeInOut',
+              type: 'tween',
+            }}
+            key={'loading'}
+            className='fixed grid h-full w-full flex-grow place-items-center'
           >
-            <source
-              src='/loading.webm'
-              type='video/webm'
-            />
-          </video>
-        </motion.div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{ duration: 0.5, ease: 'easeInOut', type: 'tween' }}
-          id='site-content'
-          className={twMerge(
-            'center-max-xl mt-4 flex w-full flex-grow flex-col gap-4 overflow-y-hidden px-4 pt-16',
-            props.className && props.className,
-          )}
-        >
-          {props.children}
-        </motion.div>
-      )}
+            <video
+              className='h-32 w-32'
+              autoPlay
+              loop
+              muted
+            >
+              <source
+                src='/loading.webm'
+                type='video/webm'
+              />
+            </video>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{ duration: 0.5, ease: 'easeInOut', type: 'tween' }}
+            id='site-content'
+            className={twMerge(
+              'center-max-xl mt-4 flex h-auto w-full flex-grow flex-col gap-4 overflow-y-hidden px-4 pt-16',
+              props.className && props.className,
+            )}
+          >
+            {props.children}
+          </motion.div>
+        )}
+      </div>
     </>
   );
 }

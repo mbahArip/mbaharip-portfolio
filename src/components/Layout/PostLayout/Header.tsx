@@ -72,7 +72,7 @@ export default function PostLayoutHeader({ data, type, comments }: PostLayoutHea
       <div className='center-max-xl absolute left-1/2 top-20 z-20 -translate-x-1/2 px-2'>
         <Link
           href={`/${type === 'stuff' ? '3d' : type}`}
-          className='w-fit gap-1 rounded-medium bg-primary-50/50 px-2 backdrop-blur'
+          className='w-fit gap-1 rounded-medium bg-primary-50/50 px-2 shadow-medium backdrop-blur'
         >
           <Icon name='ArrowLeftCircle' />
           <span>Back</span>
@@ -82,7 +82,7 @@ export default function PostLayoutHeader({ data, type, comments }: PostLayoutHea
         variants={titleContainer}
         initial={'hidden'}
         animate={'show'}
-        className='center-max-xl absolute bottom-8 left-1/2 z-20 flex w-full -translate-x-1/2 flex-col gap-2 px-2'
+        className='center-max-xl absolute bottom-8 left-1/2 z-20 flex w-full -translate-x-1/2 flex-col gap-2 px-2 md:px-4'
       >
         <motion.div
           variants={titleItem}
@@ -195,15 +195,16 @@ export default function PostLayoutHeader({ data, type, comments }: PostLayoutHea
         {'tags' in data && (
           <motion.div
             variants={titleItem}
-            className='flex flex-wrap items-center gap-2'
+            className='flex flex-wrap items-center gap-1'
           >
-            <span className='text-tiny'>Tags</span>
+            <span className='text-tiny'>Tags:</span>
             {data.tags.map((tag) => (
               <Chip
                 key={tag.id}
                 size='sm'
-                variant='flat'
+                variant='dot'
                 color={tag.color ? (tag.color as DbColor) : 'default'}
+                className='cursor-default'
                 classNames={{
                   base: 'px-1 h-fit',
                   content: 'text-tiny',

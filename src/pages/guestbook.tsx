@@ -192,8 +192,19 @@ export default function Guestbook(props: GuestbookProps) {
       >
         {session ? (
           <div className='center-max-lg flex flex-col gap-2'>
-            <span className='flex items-center gap-2 text-small'>
-              Signed in as {session.user?.name} ・{' '}
+            <div className='flex items-center gap-1 text-small'>
+              <span>
+                Commenting as{' '}
+                <span
+                  className={twMerge(
+                    'font-bold',
+                    session.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && 'text-success',
+                  )}
+                >
+                  {session.user?.name}
+                </span>
+              </span>
+              <span>・</span>
               <Link
                 as={'span'}
                 className='cursor-pointer text-small'
@@ -201,7 +212,7 @@ export default function Guestbook(props: GuestbookProps) {
               >
                 Sign out
               </Link>
-            </span>
+            </div>
             <form
               className='flex items-start gap-2'
               onSubmit={handleSendChat}
@@ -312,7 +323,7 @@ function Chat(props: DbGuestbookResponse & { is_pinned?: boolean; compact?: bool
       <m.div
         variants={chatItem}
         className={twMerge(
-          'flex items-start gap-4 px-4',
+          'flex items-start gap-4 px-4 ',
           props.is_pinned && 'flex-col gap-1 rounded-medium border border-divider px-4 py-2',
         )}
       >

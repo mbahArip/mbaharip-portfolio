@@ -5,7 +5,7 @@
 @layer base {
   html,
   body {
-    @apply text-[14px] lg:text-base;
+    @apply min-h-screen text-[14px] lg:text-base;
     @apply m-0 box-border p-0;
     @apply bg-background font-sans text-foreground;
   }

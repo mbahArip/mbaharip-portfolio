@@ -25,9 +25,10 @@ export interface Data404 {
   title: string;
   subtitle?: string;
 }
-export interface DataPCSpecs {
+export interface DataWorkspace {
   title: string;
   value: string;
+  url?: string;
 }
 
 export interface APIResponse<T = undefined> {

@@ -11,6 +11,15 @@ type DbRowSummary<T extends DbTables, K extends keyof DbRow<T>> = Pick<DbRow<T>,
 type DbInsert<T extends DbTables> = Omit<Database['public']['Tables'][T]['Insert'], keyof DbDefaultSchema>;
 type DbUpdate<T extends DbTables> = Omit<Database['public']['Tables'][T]['Update'], keyof DbDefaultSchema>;
 type DbTables = keyof Database['public']['Tables'];
+export interface DbGetOptions {
+  ids?: string[];
+  page?: number;
+  rowsPerPage?: number;
+  query?: string;
+  tags?: string[];
+  order?: 'asc' | 'desc';
+  orderBy?: keyof DbRow<'blogs'>;
+}
 
 /**
  * Master Data

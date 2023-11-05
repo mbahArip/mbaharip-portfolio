@@ -13,6 +13,7 @@ export default function getOptimizedImage(
 
   const parsedUrl = new URL(url);
   parsedUrl.hostname = 'media.discordapp.net';
+  parsedUrl.search = '';
   parsedUrl.searchParams.append('width', String(width));
   parsedUrl.searchParams.append('height', String(height));
   parsedUrl.searchParams.append('format', 'webp');

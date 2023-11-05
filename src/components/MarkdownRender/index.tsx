@@ -15,6 +15,10 @@ import { State } from 'types/Common';
 interface MarkdownRenderProps {
   children: string;
   isComments?: boolean;
+  classNames?: {
+    wrapper?: string;
+    content?: string;
+  };
 }
 
 type Components = Partial<{
@@ -206,22 +210,25 @@ const customComponents: Components = {
   },
 };
 
-export default function MarkdownRender({ children, isComments }: MarkdownRenderProps) {
+export default function MarkdownRender({ children, isComments, classNames }: MarkdownRenderProps) {
   return (
-    <div className={twMerge('w-full', isComments ? 'markdown-comment' : 'markdown')}>
+    <div className={twMerge('w-full', isComments ? 'markdown-comment' : 'markdown', classNames?.wrapper)}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkToc]}
         rehypePlugins={[rehypeRaw, [rehypePrism, { ignoreMissing: true }]]}
         allowedElements={
           isComments ? ['p', 'code', 'a', 'pre', 'span', 'b', 'strong', 'em', 'del', 'blockquote'] : undefined
         }
+        className={twMerge('w-full', classNames?.content)}
         // urlTransform={(url, key, node) => {
         //   if (node.tagName === 'a') {
-        //     return url.startsWith('/')
-        //       ? `${url}`
+        //     const safeHref = url.startsWith('/')
+        //       ? url
         //       : url.startsWith('#')
-        //       ? `${window.location.pathname}${url}`
-        //       : `${process.env.NEXT_PUBLIC_DOMAIN}/redirect?url=${encodeURIComponent(url)}`;
+        //       ? `${router.asPath}${url}`
+        //       : `/redirect?url=${encodeURIComponent(url)}&ref=${encodeURIComponent(router.asPath)}`;
+
+        //     return safeHref;
         //   } else {
         //     return url.startsWith('/') ? `${process.env.NEXT_PUBLIC_DOMAIN}${url}` : url;
         //   }
@@ -258,12 +265,12 @@ function CustomPreComponent(props: PreProps) {
 
   return (
     <span className='relative'>
-      <span className='absolute left-0 top-0 flex w-full items-center justify-end gap-2 rounded-medium p-2'>
+      <span className='absolute right-0 top-2 flex w-full items-center justify-end gap-2 rounded-medium p-2'>
         <Chip
           size='sm'
           color='secondary'
           classNames={{
-            content: 'capitalize',
+            content: 'uppercase',
           }}
         >
           {props.language ?? 'Unknown language'}
@@ -294,7 +301,10 @@ function CustomPreComponent(props: PreProps) {
       </span>
       <pre
         ref={codeRef as LegacyRef<HTMLPreElement>}
-        className={twMerge('code !rounded-medium border border-divider shadow-medium', props.className)}
+        className={twMerge(
+          'code h-full max-h-[60vh] !rounded-medium border border-divider shadow-medium',
+          props.className,
+        )}
       >
         {props.children}
       </pre>

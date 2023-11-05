@@ -13,12 +13,14 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-montserrat)', 'var(--font-kurenaido)', ...defaultTheme.fontFamily.sans],
+        sans: ['var(--font-geist)', 'var(--font-montserrat)', 'var(--font-kurenaido)', ...defaultTheme.fontFamily.sans],
         mono: ['var(--font-jetbrains-mono)', ...defaultTheme.fontFamily.mono],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'login': 'url(/login-bg.svg)',
+        'checked': 'url(/checkmark.svg)',
       },
     },
   },

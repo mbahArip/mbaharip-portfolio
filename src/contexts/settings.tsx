@@ -1,13 +1,18 @@
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import supabase from 'utils/client/supabase';
 
 // Add more later
 export interface SettingsContextProps {
   isHireable: boolean;
+  onHireableChange?: (isHireable: boolean) => Promise<void>;
 }
 const SettingsContext = createContext<SettingsContextProps>({
   isHireable: false,
+  onHireableChange: async () => {},
 });
 
 export const useSettings = () => useContext(SettingsContext);
@@ -16,9 +21,8 @@ interface SettingsProviderProps {
   children: React.ReactNode;
 }
 export const SettingsProvider = ({ children }: SettingsProviderProps) => {
-  const [settings, setSettings] = useState<SettingsContextProps>({
-    isHireable: false,
-  });
+  const { data: session } = useSession();
+  const [hireable, setHireable] = useState<boolean>(false);
 
   // assign settings
   useEffect(() => {
@@ -30,9 +34,7 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
 
         const isHireable = data.find((d) => d.id === 'isHireable')?.value === 'true';
 
-        setSettings({
-          isHireable,
-        });
+        setHireable(isHireable);
       });
 
     // subscribe to settings
@@ -48,10 +50,7 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
         (payload) => {
           if (payload.new.id === 'isHireable') {
             const isHireable = payload.new.value === 'true';
-            setSettings((prev) => ({
-              ...prev,
-              isHireable,
-            }));
+            setHireable(isHireable);
           }
         },
       )
@@ -62,5 +61,34 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
     };
   }, []);
 
-  return <SettingsContext.Provider value={settings}>{children}</SettingsContext.Provider>;
+  const onHireableChange = async (isHireable: boolean) => {
+    const prevStatus = hireable;
+    try {
+      setHireable(isHireable);
+      const res = await axios.post(
+        '/api/profile/status',
+        {
+          isHireable: String(isHireable),
+        },
+        {
+          headers: {
+            Authorization: session?.user?.email,
+          },
+        },
+      );
+      if (res.data.error) throw new Error(res.data.error);
+      toast.success('Status updated');
+    } catch (error: any) {
+      console.error(error);
+      toast.error('Failed to update status');
+      setHireable(prevStatus);
+    }
+  };
+
+  const val: SettingsContextProps = {
+    isHireable: hireable,
+    onHireableChange,
+  };
+
+  return <SettingsContext.Provider value={val}>{children}</SettingsContext.Provider>;
 };

@@ -3,12 +3,14 @@ import { Button } from '@nextui-org/react';
 import axios from 'axios';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { LegacyRef, useEffect, useRef, useState } from 'react';
+import { renderToString } from 'react-dom/server';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { toast } from 'react-toastify';
 import { twMerge } from 'tailwind-merge';
 
 import Icon from 'components/Icons';
 import Link from 'components/Link';
+import MarkdownRender from 'components/MarkdownRender';
 
 import createUserId from 'utils/createUserId';
 
@@ -70,8 +72,11 @@ export default function PostLayoutCommentSection(props: PostLayoutCommentSection
     setWaitingForCaptcha(false);
     if (!token) throw new Error('Failed to get reCAPTCHA token.');
 
+    const markdownString = renderToString(<MarkdownRender isComments>{value}</MarkdownRender>);
+
     const payload: DbCommentCreate & {
       postId: string;
+      is_prohibited: boolean;
       type: 'projects' | 'blogs' | 'stuff';
     } = {
       postId: props.post.id,
@@ -84,6 +89,7 @@ export default function PostLayoutCommentSection(props: PostLayoutCommentSection
       reply_to: isReplying?.id ?? null,
       is_me:
         session.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && session.user?.name === 'mbaharip' ? true : false,
+      is_prohibited: markdownString.includes('comment-prohibited-identifier'),
     };
 
     const res = await axios
@@ -129,7 +135,15 @@ export default function PostLayoutCommentSection(props: PostLayoutCommentSection
         {session ? (
           <div className='flex items-center gap-1 text-small'>
             <span>
-              Commenting as <span className='font-bold'>{session.user?.name}</span>
+              Commenting as{' '}
+              <span
+                className={twMerge(
+                  'font-bold',
+                  session.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && 'text-success',
+                )}
+              >
+                {session.user?.name}
+              </span>
             </span>
             <span>・</span>
             <Link

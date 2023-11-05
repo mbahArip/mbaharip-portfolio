@@ -1,8 +1,5 @@
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { renderToString } from 'react-dom/server';
-
-import MarkdownRender from 'components/MarkdownRender';
 
 import supabase from 'utils/client/supabase';
 
@@ -36,16 +33,15 @@ export default async function handler(request: NextApiRequest, response: NextApi
       return response.status(401).json({ message: 'Failed to verify Captcha' });
     }
 
-    const { type, user_id, user_name, content, parent_id, reply_to, user_avatar, postId, is_me } =
+    const { type, user_id, user_name, content, is_prohibited, parent_id, reply_to, user_avatar, postId, is_me } =
       request.body as DbCommentCreate & {
         postId: string;
+        is_prohibited: boolean;
         type: 'projects' | 'blogs' | 'stuff';
       };
     if (!type || !postId || !user_id || !user_name || !content) {
       return response.status(400).json({ message: 'One or more fields are missing' });
     }
-
-    const markdown = renderToString(<MarkdownRender isComments>{content}</MarkdownRender>);
 
     const res = await supabase
       .from('comments')
@@ -96,7 +92,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
       await supabase.from('comments').delete().match({ id: res.data.id });
       return response.status(500).json({ message: link.error.message, error: link.error });
     }
-    if (markdown.includes('comment-prohibited-identifier')) {
+    if (is_prohibited) {
       await supabase
         .from('reported_comments')
         .insert({ comment_id: res.data.id, reported_by: 'System', reason: 'Markdown contains prohibited content' });
