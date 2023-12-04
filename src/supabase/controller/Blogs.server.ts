@@ -14,7 +14,7 @@ import {
   DbMasterTagResponse,
 } from 'types/Supabase';
 
-export async function getBlogs(opts?: DbGetOptions): Promise<{
+export async function getBlogs(opts?: DbGetOptions<'blogs'>): Promise<{
   data: DbBlogResponse[];
   totalData: number;
   totalPage: number;
@@ -46,7 +46,7 @@ export async function getBlogs(opts?: DbGetOptions): Promise<{
   };
 }
 
-export async function getBlogsSummary(opts?: DbGetOptions): Promise<{
+export async function getBlogsSummary(opts?: DbGetOptions<'blogs'>): Promise<{
   data: DbBlogResponseSummary[];
   totalData: number;
   totalPage: number;
@@ -99,11 +99,11 @@ export async function getBlogById(id: string): Promise<DbBlogResponse> {
   return blog.data;
 }
 
-export interface CreateBlog extends DbBlogCreate {
+export interface CreateBlogPayload extends DbBlogCreate {
   tags: string;
   newTags?: string;
 }
-export async function createBlog(request: NextApiRequest, payload: CreateBlog): Promise<DbBlogResponse> {
+export async function createBlog(request: NextApiRequest, payload: CreateBlogPayload): Promise<DbBlogResponse> {
   const authorization = await checkSession(request);
   if (!authorization) throw { code: 401, message: 'Unauthorized' };
 
@@ -163,11 +163,15 @@ export async function createBlog(request: NextApiRequest, payload: CreateBlog): 
   return data;
 }
 
-export interface UpdateBlog extends DbBlogUpdate {
+export interface UpdateBlogPayload extends DbBlogUpdate {
   tags?: string;
   newTags?: string;
 }
-export async function updateBlog(request: NextApiRequest, id: string, payload: UpdateBlog): Promise<DbBlogResponse> {
+export async function updateBlog(
+  request: NextApiRequest,
+  id: string,
+  payload: UpdateBlogPayload,
+): Promise<DbBlogResponse> {
   const authorization = await checkSession(request);
   if (!authorization) throw { code: 401, message: 'Unauthorized' };
 

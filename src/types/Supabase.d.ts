@@ -1,4 +1,4 @@
-import { Database } from './SupabaseSchema';
+import { Database } from './Schema';
 
 interface DbDefaultSchema {
   id: string;
@@ -11,105 +11,89 @@ type DbRowSummary<T extends DbTables, K extends keyof DbRow<T>> = Pick<DbRow<T>,
 type DbInsert<T extends DbTables> = Omit<Database['public']['Tables'][T]['Insert'], keyof DbDefaultSchema>;
 type DbUpdate<T extends DbTables> = Omit<Database['public']['Tables'][T]['Update'], keyof DbDefaultSchema>;
 type DbTables = keyof Database['public']['Tables'];
-export interface DbGetOptions {
-  ids?: string[];
-  page?: number;
-  rowsPerPage?: number;
-  query?: string;
-  tags?: string[];
-  order?: 'asc' | 'desc';
-  orderBy?: keyof DbRow<'blogs'>;
+type DbEnums = keyof Database['public']['Enums'];
+export type DbEnum<T extends DbEnums> = Database['public']['Enums'][T];
+export interface DbGetOptions<T extends DbTables> {
+  ids?: string[] | null;
+  page?: number | null;
+  rowsPerPage?: number | null;
+  query?: string | null;
+  tags?: string[] | null;
+  status?: DbEnum<'status'> | null;
+  category?: string | null;
+  order?: 'asc' | 'desc' | null;
+  orderBy?: keyof DbRow<T> | null;
+  is_featured?: boolean | null;
+  is_reply?: boolean | null;
+  is_flagged?: boolean | null;
 }
 
-/**
- * Master Data
- */
+// Master Category
+export interface DbSchemaMasterCategory extends DbRow<'master_cat'> {}
+export interface DbSchemaMasterCategoryInsert extends DbInsert<'master_cat'> {}
+export interface DbSchemaMasterCategoryUpdate extends DbUpdate<'master_cat'> {}
 
-export type DbMasterStackResponse = DbRow<'master_stack'>;
-export type DbMasterStackCreate = DbInsert<'master_stack'>;
-export type DbMasterStackUpdate = DbUpdate<'master_stack'>;
+// Master Tags
+export interface DbSchemaMasterTag extends DbRow<'master_tag'> {}
+export interface DbSchemaMasterTagInsert extends DbInsert<'master_tag'> {}
+export interface DbSchemaMasterTagUpdate extends DbUpdate<'master_tag'> {}
 
-export type DbMasterTagResponse = DbRow<'master_tag'>;
-export type DbMasterTagCreate = DbInsert<'master_tag'>;
-export type DbMasterTagUpdate = DbUpdate<'master_tag'>;
+// Attachments
+export interface DbSchemaAttachment extends DbRow<'attachments'> {
+  post?: DbSchemaPost;
+}
+export interface DbSchemaAttachmentInsert extends DbInsert<'attachments'> {}
+export interface DbSchemaAttachmentUpdate extends DbUpdate<'attachments'> {}
 
-export type DbCommentResponse = DbRow<'comments'> & { reply_to?: DbRow<'comments'> | (string & {}[]) };
-type CommentSummary = 'id' | 'user_id' | 'user_name' | 'user_avatar' | 'content' | 'is_published';
-export type DbCommentSummary = Pick<DbRow<'comments'>, CommentSummary>;
-export type DbCommentCreate = DbInsert<'comments'>;
-export type DbCommentUpdate = DbUpdate<'comments'>;
+// Comments
+export interface DbSchemaComment extends DbRow<'comments'> {
+  post?: Pick<DbSchemaPost, 'id' | 'title'> | null;
+  reports?: number;
+  reply?: number;
+}
+export interface DbSchemaCommentInsert extends DbInsert<'comments'> {}
+export interface DbSchemaCommentUpdate extends DbUpdate<'comments'> {}
 
-export type DbReportResponse = DbRow<'reported_comments'>;
-export type DbReportCreate = DbInsert<'reported_comments'>;
-export type DbReportUpdate = DbUpdate<'reported_comments'>;
+// Reports
+export interface DbSchemaCommentReport extends DbRow<'reports'> {
+  comment: DbSchemaComments;
+}
+export interface DbSchemaCommentReportInsert extends DbInsert<'reports'> {}
+export interface DbSchemaCommentReportUpdate extends DbUpdate<'reports'> {}
 
-/**
- * ====================
- */
+// Posts
+export interface DbSchemaPost extends Omit<DbRow<'posts'>, 'views'> {
+  thumbnail_attachment: DbRow<'attachments'>;
+  category: DbSchemaMasterCategory;
+  tags: DbSchemaMasterTag[];
+  comments?: DbSchemaComments[];
+  count: {
+    views: number;
+    comments?: number;
+  };
+}
+export interface DbSchemaPostInsert extends DbInsert<'posts'> {
+  tags: DbSchemaMasterTagInsert[];
+  newTags?: DbSchemaMasterTagInsert[];
+}
+export interface DbSchemaPostUpdate extends DbUpdate<'posts'> {
+  tags?: DbSchemaMasterTag[];
+  newTags?: DbSchemaMasterTag[];
+}
 
-/**
- * Project Data
- */
-export type DbProjectResponse = DbRow<'projects'> & {
-  stacks: DbMasterStackResponse[];
-  comments: DbCommentResponse[];
-};
-type ProjectSummary = 'title' | 'summary' | 'views' | 'thumbnail_url';
-export type DbProjectResponseSummary = Pick<DbRow<'projects'>, ProjectSummary> & {
-  comments: number;
-  stacks: DbMasterStackResponse[];
-} & DbDefaultSchema;
-export type DbProjectCreate = DbInsert<'projects'>;
-export type DbProjectUpdate = DbUpdate<'projects'>;
+// Guestbook
+export interface DbSchemaGuestbook extends DbRow<'guestbook'> {
+  reply_to?: DbSchemaGuestbook;
+}
+export interface DbSchemaGuestbookInsert extends DbInsert<'guestbook'> {}
+export interface DbSchemaGuestbookUpdate extends DbUpdate<'guestbook'> {}
 
-/**
- * Blog Data
- */
-export type DbBlogResponse = DbRow<'blogs'> & {
-  tags: DbMasterTagResponse[];
-  comments: DbCommentResponse[];
-};
-type BlogSummary = 'title' | 'summary' | 'views' | 'thumbnail_url' | 'is_featured';
-export type DbBlogResponseSummary = Pick<DbRow<'blogs'>, BlogSummary> & {
-  comments: number;
-  tags: DbMasterTagResponse[];
-} & DbDefaultSchema;
-export type DbBlogCreate = DbInsert<'blogs'>;
-export type DbBlogUpdate = DbUpdate<'blogs'>;
+// Mail
+export interface DbSchemaMail extends DbRow<'mail'> {}
+export interface DbSchemaMailInsert extends DbInsert<'mail'> {}
+export interface DbSchemaMailUpdate extends DbUpdate<'mail'> {}
 
-/**
- * Stuff Data
- */
-export type DbStuffResponse = DbRow<'stuff'> & {
-  tags: DbMasterTagResponse[];
-  comments: DbCommentResponse[];
-};
-type StuffSummary = 'title' | 'summary' | 'views' | 'thumbnail_url' | 'is_nsfw';
-export type DbStuffResponseSummary = Pick<DbRow<'stuff'>, StuffSummary> & {
-  comments: number;
-  tags: DbMasterTagResponse[];
-  is_images: boolean;
-  is_videos: boolean;
-  is_sketchfab: boolean;
-} & DbDefaultSchema;
-export type DbStuffCreate = DbInsert<'stuff'>;
-export type DbStuffUpdate = DbUpdate<'stuff'>;
-
-/**
- * ====================
- */
-
-/**
- * Contact Form Data
- * Note: There won't be any update method for this.
- * I'll add a logic to delete the data after I replied to the user.
- */
-export type DbContactFormResponse = DbRow<'contact_form'>;
-export type DbContactFormCreate = DbInsert<'contact_form'>;
-
-/**
- * Guestbook Data
- */
-export type DbGuestbookResponse = DbRow<'guestbook'>;
-export type DbGuestbookCreate = DbInsert<'guestbook'>;
-export type DbGuestbookUpdate = DbUpdate<'guestbook'>;
+// Settings
+export interface DbSchemaSettings extends DbRow<'settings'> {}
+export interface DbSchemaSettingsInsert extends DbInsert<'settings'> {}
+export interface DbSchemaSettingsUpdate extends DbUpdate<'settings'> {}

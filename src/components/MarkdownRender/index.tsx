@@ -1,4 +1,5 @@
 import { Button, Checkbox, Chip, Code, Divider, Image, Tooltip } from '@nextui-org/react';
+import c from 'constant';
 import React, { LegacyRef, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypePrism from 'rehype-prism-plus';
@@ -91,20 +92,24 @@ const customComponents: Components = {
     );
   },
   img: (props) => {
+    return <CustomImageComponent {...props} />;
+
     const { src, alt } = props;
     return (
       <Tooltip content={'Click to open image in new tab'}>
-        <span className='flex w-full flex-col items-center gap-2'>
+        <span className='flex h-fit w-fit flex-col gap-2'>
           <Image
             src={src}
             alt={alt}
-            className='h-full cursor-pointer'
+            className='cursor-pointer'
             classNames={{
-              wrapper: 'border border-divider',
+              img: 'max-w-[32rem] max-h-[32rem] object-contain',
             }}
+            removeWrapper
             onClick={() => window.open(src, '_blank')}
+            onError={() => {}}
           />
-          <span className='text-tiny text-default-400'>{alt}</span>
+          <span className='text-tiny capitalize text-default-400'>{alt}</span>
         </span>
       </Tooltip>
     );
@@ -123,7 +128,7 @@ const customComponents: Components = {
         href={safeHref}
         isExternal={target === '_blank'}
       >
-        {children}
+        {children || href}
       </Link>
     );
   },
@@ -220,19 +225,6 @@ export default function MarkdownRender({ children, isComments, classNames }: Mar
           isComments ? ['p', 'code', 'a', 'pre', 'span', 'b', 'strong', 'em', 'del', 'blockquote'] : undefined
         }
         className={twMerge('w-full', classNames?.content)}
-        // urlTransform={(url, key, node) => {
-        //   if (node.tagName === 'a') {
-        //     const safeHref = url.startsWith('/')
-        //       ? url
-        //       : url.startsWith('#')
-        //       ? `${router.asPath}${url}`
-        //       : `/redirect?url=${encodeURIComponent(url)}&ref=${encodeURIComponent(router.asPath)}`;
-
-        //     return safeHref;
-        //   } else {
-        //     return url.startsWith('/') ? `${process.env.NEXT_PUBLIC_DOMAIN}${url}` : url;
-        //   }
-        // }}
         components={customComponents}
       >
         {children}
@@ -370,5 +362,32 @@ function CustomBlockquoteComponent(props: React.HTMLAttributes<HTMLQuoteElement>
         </>
       )}
     </div>
+  );
+}
+
+function CustomImageComponent(
+  props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+) {
+  const { src, alt } = props;
+  const [imgSrc, setImgSrc] = useState(src as string);
+  return (
+    <Tooltip content={'Click to open image in new tab'}>
+      <span className='flex h-fit w-fit flex-col gap-2'>
+        <Image
+          src={imgSrc}
+          alt={alt}
+          className='cursor-pointer'
+          classNames={{
+            img: 'max-w-[32rem] max-h-[32rem] object-contain',
+          }}
+          removeWrapper
+          onClick={() => window.open(src, '_blank')}
+          onError={() => {
+            setImgSrc(c.PLACEHOLDER_IMAGE);
+          }}
+        />
+        <span className='text-tiny capitalize text-default-400'>{alt}</span>
+      </span>
+    </Tooltip>
   );
 }

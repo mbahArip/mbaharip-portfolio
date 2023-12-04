@@ -3,14 +3,20 @@ import { useSession } from 'next-auth/react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { ErrorToast, SuccessToast } from 'components/DetailedToast';
+
 import supabase from 'utils/client/supabase';
+
+import { State } from 'types/Common';
 
 // Add more later
 export interface SettingsContextProps {
+  settingsState: State;
   isHireable: boolean;
-  onHireableChange?: (isHireable: boolean) => Promise<void>;
+  onHireableChange: (isHireable: boolean) => Promise<void>;
 }
 const SettingsContext = createContext<SettingsContextProps>({
+  settingsState: 'loading',
   isHireable: false,
   onHireableChange: async () => {},
 });
@@ -22,6 +28,7 @@ interface SettingsProviderProps {
 }
 export const SettingsProvider = ({ children }: SettingsProviderProps) => {
   const { data: session } = useSession();
+  const [settingsState, setSettingsState] = useState<State>('loading');
   const [hireable, setHireable] = useState<boolean>(false);
 
   // assign settings
@@ -35,6 +42,14 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
         const isHireable = data.find((d) => d.id === 'isHireable')?.value === 'true';
 
         setHireable(isHireable);
+
+        const timeout = setTimeout(() => {
+          setSettingsState('idle');
+        }, 150);
+
+        return () => {
+          clearTimeout(timeout);
+        };
       });
 
     // subscribe to settings
@@ -62,13 +77,20 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
   }, []);
 
   const onHireableChange = async (isHireable: boolean) => {
+    const toastId = 'settings-hireable';
     const prevStatus = hireable;
+
+    toast.loading('Updating status...', {
+      toastId,
+      autoClose: false,
+    });
+
     try {
       setHireable(isHireable);
-      const res = await axios.post(
-        '/api/profile/status',
+      const res = await axios.put(
+        '/api/admin/hireable',
         {
-          isHireable: String(isHireable),
+          hireable: String(isHireable),
         },
         {
           headers: {
@@ -77,15 +99,31 @@ export const SettingsProvider = ({ children }: SettingsProviderProps) => {
         },
       );
       if (res.data.error) throw new Error(res.data.error);
-      toast.success('Status updated');
+      toast.update(toastId, {
+        render: <SuccessToast message='Successfully update status' />,
+        type: toast.TYPE.SUCCESS,
+        autoClose: 1500,
+        isLoading: false,
+      });
     } catch (error: any) {
       console.error(error);
-      toast.error('Failed to update status');
+      toast.update(toastId, {
+        render: (
+          <ErrorToast
+            message='Failed to update status'
+            details={error.response.data.error || error.message}
+          />
+        ),
+        type: toast.TYPE.ERROR,
+        autoClose: 1500,
+        isLoading: false,
+      });
       setHireable(prevStatus);
     }
   };
 
   const val: SettingsContextProps = {
+    settingsState,
     isHireable: hireable,
     onHireableChange,
   };

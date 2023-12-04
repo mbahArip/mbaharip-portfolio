@@ -87,7 +87,7 @@ export default function PostLayout(props: PostLayoutProps) {
             modifiedTime: props.data.updated_at,
             section: props.type.toUpperCase().substring(0, 1) + props.type.substring(1),
             tags: [
-              ...('tags' in props.data ? props.data.tags.map((tag) => tag.name) : []),
+              ...('tags' in props.data ? props.data.stacks.map((tag) => tag.name) : []),
               ...('stacks' in props.data ? props.data.stacks.map((stack) => stack.name) : []),
             ],
           },

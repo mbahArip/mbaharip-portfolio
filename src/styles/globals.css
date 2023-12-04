@@ -53,6 +53,10 @@
 }
 
 @layer components {
+  tr > th:has(label[aria-label='Select All']) {
+    @apply !w-1.5;
+  }
+
   .background-overrides {
     @apply bg-[var(--background-color)] !important;
   }

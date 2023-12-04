@@ -2,6 +2,7 @@ import { Button, NextUIProvider } from '@nextui-org/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import 'highlight.js/styles/github-dark.min.css';
 import { SessionProvider } from 'next-auth/react';
+import NextAdapterPages from 'next-query-params/pages';
 import { DefaultSeo } from 'next-seo';
 import type { AppProps } from 'next/app';
 import { JetBrains_Mono, Montserrat, Zen_Kaku_Gothic_New } from 'next/font/google';
@@ -11,13 +12,16 @@ import { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from 'react-wrap-balancer';
+import { SWRConfig } from 'swr';
 import { twMerge } from 'tailwind-merge';
+import { QueryParamProvider } from 'use-query-params';
 
 import Icon from 'components/Icons';
 import Footer from 'components/Layout/Footer';
 import Navbar from 'components/Layout/Navbar';
 
 import { SettingsProvider } from 'contexts/settings';
+import { swrFetcher } from 'utils/swr';
 
 import defaultSEO from 'config/seo';
 import toastConfig from 'config/toast';
@@ -52,7 +56,7 @@ export const geist = localFont({
       style: 'normal',
     },
   ],
-  display: 'swap',
+  display: 'block',
   preload: true,
   variable: '--font-geist',
 });
@@ -110,49 +114,60 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     >
       <Provider>
         <SessionProvider session={session}>
-          <NextUIProvider>
+          <NextUIProvider navigate={router.push}>
             <div
               className={twMerge(
                 `relative flex h-fit max-h-fit min-h-screen w-full max-w-[100vw] flex-col items-center justify-between font-sans`,
               )}
             >
-              <ToastContainer {...toastConfig} />
-              <DefaultSeo {...defaultSEO} />
-              <SettingsProvider>
-                {!router.asPath.startsWith('/admin') && <Navbar key={'navbar'} />}
-                <main className='flex h-full w-full flex-grow flex-col'>
-                  <Component {...pageProps} />
-                </main>
+              <QueryParamProvider adapter={NextAdapterPages}>
+                <ToastContainer {...toastConfig} />
+                <DefaultSeo {...defaultSEO} />
+                <SWRConfig
+                  value={{
+                    loadingTimeout: 5000,
+                    errorRetryCount: 5,
+                    keepPreviousData: true,
+                    fetcher: swrFetcher,
+                  }}
+                >
+                  <SettingsProvider>
+                    {!router.asPath.startsWith('/admin') && <Navbar key={'navbar'} />}
+                    <main className='flex h-full w-full flex-grow flex-col'>
+                      <Component {...pageProps} />
+                    </main>
 
-                {!router.asPath.startsWith('/admin') && (
-                  <>
-                    <Footer />
-                    <motion.div
-                      initial={{
-                        opacity: 0,
-                        bottom: 0,
-                      }}
-                      animate={{
-                        opacity: showToTop ? 1 : 0,
-                        bottom: showToTop ? 20 : 0,
-                        pointerEvents: showToTop ? 'auto' : 'none',
-                        cursor: showToTop ? 'pointer' : 'default',
-                      }}
-                      className='fixed right-4 z-40'
-                    >
-                      <Button
-                        isIconOnly
-                        className='border border-divider bg-opacity-50 backdrop-blur'
-                        onPress={() => {
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                      >
-                        <Icon name='ChevronUp' />
-                      </Button>
-                    </motion.div>
-                  </>
-                )}
-              </SettingsProvider>
+                    {!router.asPath.startsWith('/admin') && (
+                      <>
+                        <Footer />
+                        <motion.div
+                          initial={{
+                            opacity: 0,
+                            bottom: 0,
+                          }}
+                          animate={{
+                            opacity: showToTop ? 1 : 0,
+                            bottom: showToTop ? 20 : 0,
+                            pointerEvents: showToTop ? 'auto' : 'none',
+                            cursor: showToTop ? 'pointer' : 'default',
+                          }}
+                          className='fixed right-4 z-40'
+                        >
+                          <Button
+                            isIconOnly
+                            className='border border-divider bg-opacity-50 backdrop-blur'
+                            onPress={() => {
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                          >
+                            <Icon name='ChevronUp' />
+                          </Button>
+                        </motion.div>
+                      </>
+                    )}
+                  </SettingsProvider>
+                </SWRConfig>
+              </QueryParamProvider>
             </div>
           </NextUIProvider>
         </SessionProvider>

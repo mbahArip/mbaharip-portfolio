@@ -1,4 +1,4 @@
-type NextUIColorVar =
+export type NextUIColorVar =
   | singularColor
   | contentColor
   | dividerColor

@@ -1,203 +1,161 @@
-import { defaultBlockSchema } from '@blocknote/core';
-import '@blocknote/core/style.css';
-import { BlockNoteView, Theme, darkDefaultTheme, getDefaultReactSlashMenuItems, useBlockNote } from '@blocknote/react';
-import c_blocks from 'constant/blocks';
+import { Button, ButtonGroup } from '@nextui-org/react';
+import { motion as m } from 'framer-motion';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
+import { ErrorToast, SuccessToast } from 'components/DetailedToast';
 import Icon from 'components/Icons';
+import MarkdownRender from 'components/MarkdownRender';
 
-import getNextUIColor from 'utils/nextui-color-var';
 import uploadFile from 'utils/uploadFile';
 
-import { CustomBlockData } from 'types/Blocks';
+import toastConfig from 'config/toast';
 
-import { Alert, Blockquote, CodeBlock, EmbedURL, File, HorizontalLine, Image, Snippet } from './Blocks';
+export default function MarkdownEditor() {
+  const [mode, setMode] = useState<'edit' | 'preview' | 'split'>('split');
+  const [content, setContent] = useState<string>('# Hello world');
+  const [ref, setRef] = useState<HTMLTextAreaElement | null>(null);
 
-interface MarkdownEditorProps {
-  mode: 'edit' | 'view';
-  content: string;
-  onContentChange: (content: string) => void;
-  markdownContent?: (md: string) => void;
-}
-
-const theme = {
-  ...darkDefaultTheme,
-  colors: {
-    ...darkDefaultTheme.colors,
-    editor: {
-      background: 'transparent',
-      text: getNextUIColor('foreground'),
-    },
-  },
-  componentStyles: (theme) => ({
-    Editor: {
-      'minHeight': '50vh',
-      'a': {
-        color: getNextUIColor('primary'),
-        cursor: 'pointer',
-      },
-      '[data-node-type="blockContainer"] *': {
-        fontFamily: 'var(--font-geist)',
-      },
-    },
-  }),
-} satisfies Theme;
-
-const customBlockSchema = {
-  ...defaultBlockSchema,
-  img: Image.blockSchema('dark'),
-  file: File.blockSchema('dark'),
-  embed_url: EmbedURL.blockSchema('dark'),
-  alert: Alert.blockSchema('dark'),
-  blockquote: Blockquote.blockSchema('dark'),
-  snippet: Snippet.blockSchema('dark'),
-  codeblock: CodeBlock.blockSchema('dark'),
-  hr: HorizontalLine.blockSchema('dark'),
-};
-
-export default function MarkdownEditor(props: MarkdownEditorProps) {
-  const slashMenuItems = () => {
-    const defaultSlashMenuItems = getDefaultReactSlashMenuItems(customBlockSchema);
-    const heading1Index = defaultSlashMenuItems.findIndex((item) => item.name === 'Heading');
-    const heading2Index = defaultSlashMenuItems.findIndex((item) => item.name === 'Heading 2');
-    const heading3Index = defaultSlashMenuItems.findIndex((item) => item.name === 'Heading 3');
-    const paragraphIndex = defaultSlashMenuItems.findIndex((item) => item.name === 'Paragraph');
-    const bulletListIndex = defaultSlashMenuItems.findIndex((item) => item.name === 'Bullet List');
-    const numberedListIndex = defaultSlashMenuItems.findIndex((item) => item.name === 'Numbered List');
-    const imageIndex = defaultSlashMenuItems.findIndex((item) => item.name === 'Image');
-
-    // Update icon
-    defaultSlashMenuItems[heading1Index].icon = <Icon name='Heading1' />;
-    defaultSlashMenuItems[heading2Index].icon = <Icon name='Heading2' />;
-    defaultSlashMenuItems[heading3Index].icon = <Icon name='Heading3' />;
-    defaultSlashMenuItems[paragraphIndex].icon = <Icon name='Text' />;
-    defaultSlashMenuItems[bulletListIndex].icon = <Icon name='List' />;
-    defaultSlashMenuItems[numberedListIndex].icon = <Icon name='ListOrdered' />;
-    defaultSlashMenuItems[imageIndex].icon = <Icon name='Image' />;
-
-    // Update group
-    defaultSlashMenuItems[heading1Index].group = c_blocks.Headings;
-    defaultSlashMenuItems[heading2Index].group = c_blocks.Headings;
-    defaultSlashMenuItems[heading3Index].group = c_blocks.Headings;
-    defaultSlashMenuItems[paragraphIndex].group = c_blocks.Text;
-    defaultSlashMenuItems[bulletListIndex].group = c_blocks.List;
-    defaultSlashMenuItems[numberedListIndex].group = c_blocks.List;
-    defaultSlashMenuItems[imageIndex].group = c_blocks.Media;
-
-    // Hide item
-    defaultSlashMenuItems.splice(imageIndex, 1);
-
-    return defaultSlashMenuItems;
+  const handleChangeMode = (newMode: 'edit' | 'preview' | 'split') => {
+    if (mode === newMode) return;
+    setMode(newMode);
   };
-  const editor = useBlockNote({
-    initialContent: props.content ? JSON.parse(props.content) : undefined,
-    enableBlockNoteExtensions: true,
-    editable: props.mode === 'edit',
-    domAttributes: {},
-    onEditorReady(editor) {
-      function createElement(
-        shortcut: CustomBlockData['shortcuts'],
-        event: KeyboardEvent,
-        blocks: keyof typeof customBlockSchema,
-      ) {
-        if (!shortcut) return;
-        const isCtrlOK = shortcut.ctrlKey ? event.ctrlKey : true;
-        const isShiftOK = shortcut.shiftKey ? event.shiftKey : true;
-        const isAltOK = shortcut.altKey ? event.altKey : true;
-        const isKeyOK = shortcut.key ? event.key.toLowerCase() === shortcut.key.toLowerCase() : true;
-
-        if (!isCtrlOK || !isShiftOK || !isAltOK || !isKeyOK) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        const currentBlock = editor.getTextCursorPosition().block;
-        const isEmpty = (currentBlock.content! as any).length === 0;
-
-        if (isEmpty) {
-          editor.updateBlock(currentBlock, { type: blocks });
-        } else {
-          editor.insertBlocks(
-            [
-              {
-                type: blocks,
-              },
-            ],
-            editor.getTextCursorPosition().block,
-            'after',
-          );
-          editor.setTextCursorPosition(editor.getTextCursorPosition().nextBlock!);
-        }
-      }
-      editor.domElement.addEventListener('keydown', (e) => {
-        createElement(Alert.shortcuts, e, 'alert');
-        createElement(Blockquote.shortcuts, e, 'blockquote');
-        createElement(Snippet.shortcuts, e, 'snippet');
-        createElement(CodeBlock.shortcuts, e, 'codeblock');
-      });
-    },
-    onEditorContentChange(editor) {
-      props.onContentChange(JSON.stringify(editor.topLevelBlocks));
-
-      function handleKeyword(
-        keyword: string | RegExp,
-        blockName: keyof typeof customBlockSchema,
-        focusNext: boolean = false,
-      ) {
-        if (!keyword) return;
-        const currentBlock = editor.getTextCursorPosition().block;
-        // Check for the content of the current block
-        if (currentBlock.type !== 'paragraph') return;
-        const content = currentBlock.content?.length === 0 ? '' : (currentBlock.content?.[0] as any).text;
-
-        if (content !== keyword) return;
-        editor.updateBlock(currentBlock, {
-          type: blockName,
-          text: '',
-          content: [],
-        } as any);
-        if (focusNext) {
-          editor.setTextCursorPosition(editor.getTextCursorPosition().nextBlock!);
-        }
-      }
-
-      handleKeyword(Alert.keywords!, 'alert');
-      handleKeyword(Blockquote.keywords!, 'blockquote');
-      handleKeyword(Snippet.keywords!, 'snippet');
-      handleKeyword(CodeBlock.keywords!, 'codeblock');
-      handleKeyword(HorizontalLine.keywords!, 'hr', true);
-    },
-    uploadFile: async (file) => {
-      return await uploadFile(file);
-    },
-
-    blockSchema: customBlockSchema,
-    slashMenuItems: [
-      ...slashMenuItems(),
-      Image.slashMenu,
-      File.slashMenu,
-      EmbedURL.slashMenu,
-      Alert.slashMenu,
-      Blockquote.slashMenu,
-      Snippet.slashMenu,
-      CodeBlock.slashMenu,
-      HorizontalLine.slashMenu,
-    ],
-  });
   return (
-    <div className='w-full'>
-      <BlockNoteView
-        editor={editor}
-        content={props.content ? JSON.parse(props.content) : []}
-        theme={theme}
+    <div className='flex h-full w-full flex-grow flex-col overflow-y-auto overflow-x-hidden rounded-medium bg-content1'>
+      <div
+        id='med-toolbar'
+        className='flex w-full bg-content1 p-3'
       >
-        {/* <FormattingToolbarPositioner editor={editor} />
-        <HyperlinkToolbarPositioner editor={editor} />
-        <SlashMenuPositioner editor={editor} />
-        <SideMenuPositioner
-          editor={editor}
-          sideMenu={CustomSideMenu as any}
-        /> */}
-      </BlockNoteView>
+        <ButtonGroup>
+          <Button
+            variant={mode === 'edit' ? 'shadow' : 'flat'}
+            color={mode === 'edit' ? 'primary' : 'default'}
+            isIconOnly
+            onPress={() => handleChangeMode('edit')}
+          >
+            <Icon name='PanelRightInactive' />
+          </Button>
+          <Button
+            variant={mode === 'split' ? 'shadow' : 'flat'}
+            color={mode === 'split' ? 'primary' : 'default'}
+            isIconOnly
+            onPress={() => handleChangeMode('split')}
+          >
+            <Icon name='Columns' />
+          </Button>
+          <Button
+            variant={mode === 'preview' ? 'shadow' : 'flat'}
+            color={mode === 'preview' ? 'primary' : 'default'}
+            isIconOnly
+            onPress={() => handleChangeMode('preview')}
+          >
+            <Icon name='PanelLeftInactive' />
+          </Button>
+        </ButtonGroup>
+      </div>
+
+      <div className='flex h-full w-full flex-grow bg-content2'>
+        <m.div
+          initial={{ left: 0, width: '100%' }}
+          animate={{
+            left: mode === 'preview' ? '-100%' : 0,
+            width: mode === 'preview' ? '0%' : mode === 'split' ? '50%' : '100%',
+          }}
+          transition={{ duration: 0.15 }}
+          className='relative top-0 flex h-auto flex-grow overflow-x-hidden'
+        >
+          <textarea
+            ref={setRef}
+            className='w-full resize-none whitespace-pre-wrap bg-transparent p-3 focus:outline-none'
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            onPaste={async (e) => {
+              e.preventDefault(); // Prevent default paste behavior
+              if (!ref) {
+                toast.error(
+                  <ErrorToast
+                    message='Failed to paste content'
+                    details={'textarea ref is null'}
+                  />,
+                );
+                return;
+              }
+
+              const selectionStart = ref.selectionStart ?? 0;
+              const selectionEnd = ref.selectionEnd ?? 0;
+
+              // Get type of paste data
+              const dataType = e.clipboardData.types[0];
+
+              if (e.clipboardData.types.includes('Files')) {
+                const file = e.clipboardData.files[0];
+                if (!file) return;
+                if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+                  toast.error('Only support image file');
+                  return;
+                }
+                toast.loading('Uploading image...', {
+                  toastId: 'upload-image',
+                  autoClose: false,
+                });
+
+                const url = await uploadFile(file);
+                setContent((prev) => {
+                  const newContent =
+                    prev.slice(0, selectionStart) + `![${file.name}](${url})` + prev.slice(selectionEnd);
+                  return newContent;
+                });
+                toast.update('upload-image', {
+                  render: <SuccessToast message='Image uploaded' />,
+                  autoClose: toastConfig.autoClose,
+                });
+              } else if (dataType === 'text/plain') {
+                const text = e.clipboardData.getData(dataType);
+                const isUrl = text.match(/(https?:\/\/[^\s]+)/g);
+                const isImage = text.match(/(https?:\/\/[^\s]+(\.png|\.jpg|\.jpeg))/g);
+
+                if (isImage && isUrl) {
+                  setContent((prev) => {
+                    const newContent = prev.slice(0, selectionStart) + `![](${text})` + prev.slice(selectionEnd);
+                    return newContent;
+                  });
+                  return;
+                } else if (!isImage && isUrl) {
+                  setContent((prev) => {
+                    const newContent = prev.slice(0, selectionStart) + `[](${text})` + prev.slice(selectionEnd);
+                    return newContent;
+                  });
+
+                  return;
+                }
+                setContent((prev) => {
+                  const newContent = prev.slice(0, selectionStart) + text + prev.slice(selectionEnd);
+                  return newContent;
+                });
+              } else {
+                toast.error('Only support text/plain and file');
+              }
+            }}
+          />
+        </m.div>
+        <m.div
+          initial={{ right: 0, width: '100%' }}
+          animate={{
+            right: mode === 'edit' ? '-100%' : 0,
+            width: mode === 'edit' ? '0%' : mode === 'split' ? '50%' : '100%',
+          }}
+          transition={{ duration: 0.15 }}
+          className='relative top-0 flex h-auto flex-grow overflow-x-hidden'
+        >
+          <MarkdownRender
+            classNames={{
+              content: 'w-full h-full p-3',
+            }}
+          >
+            {content}
+          </MarkdownRender>
+        </m.div>
+      </div>
     </div>
   );
 }

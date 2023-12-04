@@ -26,7 +26,10 @@ export default function Icon({ name, size = 'md', className, tooltip, ...rest }:
       <Tooltip content={tooltip}>
         <LucideIcon
           size={SIZE_MAP[size]}
-          className={twMerge('flex-shrink-0 flex-grow-0', className)}
+          className={twMerge(
+            'ease flex-shrink-0 flex-grow-0 transition-transform duration-150 motion-reduce:transition-none',
+            className,
+          )}
           {...rest}
         />
       </Tooltip>
@@ -35,7 +38,10 @@ export default function Icon({ name, size = 'md', className, tooltip, ...rest }:
   return (
     <LucideIcon
       size={SIZE_MAP[size]}
-      className={twMerge('flex-shrink-0 flex-grow-0', className)}
+      className={twMerge(
+        'ease flex-shrink-0 flex-grow-0 transition-transform duration-150 motion-reduce:transition-none',
+        className,
+      )}
       {...rest}
     />
   );

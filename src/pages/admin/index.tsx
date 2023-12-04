@@ -1,13 +1,13 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Image, Input } from '@nextui-org/react';
 import { GetServerSidePropsContext } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 
 import Icon from 'components/Icons';
 import DefaultLayout from 'components/Layout/DefaultLayout';
+
+import { handlerLogin } from 'mod/admin/auth';
 
 import supabase from 'utils/client/supabase';
 
@@ -15,22 +15,15 @@ import { State } from 'types/Common';
 
 import { authOptions } from '../api/auth/[...nextauth]';
 
-interface AdminLoginPageProps {
-  loggedIn: boolean;
+interface AdminLoginProps {
+  callbackUrl: string;
 }
-export default function AdminLogin({ loggedIn }: AdminLoginPageProps) {
+export default function AdminLogin({ callbackUrl }: AdminLoginProps) {
   const router = useRouter();
+
   const [loginState, setLoginState] = useState<State>('disabled');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
-  useEffect(() => {
-    if (loggedIn)
-      toast.error('Who are you? What are you doing here? Go away!', {
-        toastId: 'admin-hush',
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (email && password) {
@@ -40,29 +33,8 @@ export default function AdminLogin({ loggedIn }: AdminLoginPageProps) {
     }
   }, [email, password]);
 
-  const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    setLoginState('loading');
-    try {
-      const login = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-      if (login?.error) throw new Error(login.error);
-      toast.success('Welcome back!');
-      router.push('/admin/dashboard');
-    } catch (error: any) {
-      console.error(error);
-      toast.error('Who are you? What are you doing here? Go away!');
-    } finally {
-      setLoginState('idle');
-    }
-  };
-
   return (
-    <>
+    <div className='grid h-full w-full flex-grow place-items-center bg-gradient-to-t from-default-50 to-background'>
       <DefaultLayout
         seo={{
           title: 'Login',
@@ -81,17 +53,37 @@ export default function AdminLogin({ loggedIn }: AdminLoginPageProps) {
           classNames={{
             base: 'max-w-screen-sm w-full relative z-10',
             header: 'flex items-center gap-1',
-            body: 'gap-2',
+            body: 'gap-3',
           }}
         >
           <CardHeader>
-            <Icon
-              name='User'
-              size='lg'
-            />
-            <h4 className='font-bold'>Login</h4>
+            <Icon name='LogIn' />
+            <h4>Login</h4>
           </CardHeader>
-          <form onSubmit={loginHandler}>
+          <form
+            onSubmit={(e) => {
+              handlerLogin(
+                e,
+                {
+                  email: {
+                    get: email,
+                    set: setEmail,
+                  },
+                  password: {
+                    get: password,
+                    set: setPassword,
+                  },
+                  btn: {
+                    get: loginState,
+                    set: setLoginState,
+                  },
+                },
+                () => {
+                  router.push(callbackUrl);
+                },
+              );
+            }}
+          >
             <CardBody>
               <Input
                 placeholder='johndoe@acme.com'
@@ -99,7 +91,7 @@ export default function AdminLogin({ loggedIn }: AdminLoginPageProps) {
                 labelPlacement='outside'
                 type='email'
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onValueChange={setEmail}
               />
               <Input
                 placeholder='********'
@@ -107,14 +99,14 @@ export default function AdminLogin({ loggedIn }: AdminLoginPageProps) {
                 labelPlacement='outside'
                 type='password'
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onValueChange={setPassword}
               />
             </CardBody>
             <CardFooter>
               <Button
                 type='submit'
                 variant='shadow'
-                color='primary'
+                color={loginState === 'idle' ? 'primary' : 'default'}
                 fullWidth
                 isDisabled={loginState === 'disabled'}
                 isLoading={loginState === 'loading'}
@@ -125,20 +117,31 @@ export default function AdminLogin({ loggedIn }: AdminLoginPageProps) {
           </form>
         </Card>
       </DefaultLayout>
-      <div className='absolute bottom-2 left-1/2 z-10 -translate-x-1/2'>
-        <Image
-          src='/logo.svg'
-          alt='mbaharip logo'
-          className='h-8 w-8'
-          removeWrapper
-        />
+      <div className='absolute left-0 top-0 h-screen w-screen'>
+        <div className='absolute bottom-4 left-1/2 z-10 -translate-x-1/2'>
+          <Image
+            src='/logo.svg'
+            alt='mbaharip logo'
+            className='h-8'
+            removeWrapper
+          />
+        </div>
+        <div className='absolute left-0 top-0 z-0 h-screen w-screen overflow-hidden bg-login opacity-25' />
       </div>
-      <div className='absolute left-0 top-0 z-0 h-screen w-screen overflow-hidden bg-login'></div>
-    </>
+    </div>
   );
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { callbackUrl } = context.query;
+  const domain =
+    process.env.NODE_ENV === 'production' ? `https://${process.env.DOMAIN}` : `http://${process.env.DOMAIN}`;
+  let redirectUrl: URL = new URL('/admin/dashboard', domain);
+  if (callbackUrl) {
+    const url = new URL(callbackUrl as string, domain);
+    redirectUrl = url;
+  }
+
   const session = await getServerSession(context.req, context.res, authOptions);
   if (session) {
     if (session.user?.name === 'mbaharip' && session.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
@@ -148,15 +151,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       });
       return {
         redirect: {
-          destination: '/admin/dashboard',
+          destination: redirectUrl.pathname,
           permanent: false,
         },
       };
     }
   }
+
   return {
     props: {
-      loggedIn: !!session,
+      callbackUrl: redirectUrl.pathname,
     },
   };
 }

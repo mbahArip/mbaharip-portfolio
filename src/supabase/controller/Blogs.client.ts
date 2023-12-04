@@ -4,9 +4,9 @@ import { isClient } from 'supabase/helper';
 
 import { DbBlogResponse, DbBlogResponseSummary, DbGetOptions } from 'types/Supabase';
 
-import { CreateBlog, UpdateBlog } from './Blogs.server';
+import { CreateBlogPayload, UpdateBlogPayload } from './Blogs.server';
 
-export async function fetchBlogs(opts?: DbGetOptions): Promise<{
+export async function fetchBlogs(opts?: DbGetOptions<'blogs'>): Promise<{
   data: DbBlogResponse[];
   totalData: number;
   totalPage: number;
@@ -19,7 +19,7 @@ export async function fetchBlogs(opts?: DbGetOptions): Promise<{
   return { data, totalData, totalPage };
 }
 
-export async function fetchBlogsSummary(opts?: DbGetOptions): Promise<{
+export async function fetchBlogsSummary(opts?: DbGetOptions<'blogs'>): Promise<{
   data: DbBlogResponseSummary[];
   totalData: number;
   totalPage: number;
@@ -44,12 +44,12 @@ export async function fetchBlogById(id: string): Promise<DbBlogResponse> {
 export async function requestViewBlog(id: string): Promise<void> {
   isClient();
 
-  await axios.post(`/api/blogs/${id}/views`);
+  await axios.post(`/api/blogs/${id}/view`);
 
   return;
 }
 
-export async function requestCreateBlog(payload: CreateBlog, session: Session): Promise<DbBlogResponse> {
+export async function requestCreateBlog(payload: CreateBlogPayload, session: Session): Promise<DbBlogResponse> {
   isClient();
 
   const response = (
@@ -63,7 +63,11 @@ export async function requestCreateBlog(payload: CreateBlog, session: Session): 
 
   return data;
 }
-export async function requestUpdateBlog(id: string, payload: UpdateBlog, session: Session): Promise<DbBlogResponse> {
+export async function requestUpdateBlog(
+  id: string,
+  payload: UpdateBlogPayload,
+  session: Session,
+): Promise<DbBlogResponse> {
   isClient();
 
   const response = (

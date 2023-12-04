@@ -5,14 +5,14 @@ export interface Database {
     Tables: {
       blogs: {
         Row: {
-          content: string;
-          created_at: string;
           id: string;
+          created_at: string;
+          updated_at: string;
+          title: string;
+          content: string;
           is_featured: boolean;
           summary: string;
           thumbnail_url: string;
-          title: string;
-          updated_at: string;
           views: number;
         };
         Insert: {
@@ -41,17 +41,17 @@ export interface Database {
       };
       comments: {
         Row: {
-          content: string;
-          created_at: string;
           id: string;
-          is_me: boolean;
-          is_published: boolean;
+          created_at: string;
+          updated_at: string;
+          user_id: string;
+          user_avatar: string | null;
+          user_name: string;
+          content: string;
           parent_id: string | null;
           reply_to: string | null;
-          updated_at: string;
-          user_avatar: string | null;
-          user_id: string;
-          user_name: string;
+          is_me: boolean;
+          is_published: boolean;
         };
         Insert: {
           content: string;

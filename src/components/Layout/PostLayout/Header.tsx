@@ -198,7 +198,7 @@ export default function PostLayoutHeader({ data, type, comments }: PostLayoutHea
             className='flex flex-wrap items-center gap-1'
           >
             <span className='text-tiny'>Tags:</span>
-            {data.tags.map((tag) => (
+            {data.stacks.map((tag) => (
               <Chip
                 key={tag.id}
                 size='sm'

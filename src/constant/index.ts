@@ -7,6 +7,7 @@ enum c {
   MAX_SWR = 60 * 60 * 24,
 
   GITHUB_AVATAR = 'https://avatars.githubusercontent.com/u/62494292?v=4',
+  PLACEHOLDER_IMAGE = '/images/placeholder.webp',
 
   EDITOR_HEADINGS = 'Headings',
   EDITOR_TEXT = 'Text',

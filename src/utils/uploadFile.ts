@@ -1,40 +1,66 @@
 import axios from 'axios';
 
+// import env from './env';
+
+/**
+ * test
+ * @param file
+ * @param opts
+ * @returns
+ */
+
 export default async function uploadFile(
   file: File,
   opts?: {
     allowedExtensions?: string[];
+    uploadPath?: string;
   },
 ) {
   try {
-    const discordWebhooks = process.env.NEXT_PUBLIC_DISCORD_WEBHOOKS?.split('::') ?? [];
-    if (!discordWebhooks) throw new Error('Missing discord webhook url');
-
-    // Pick random webhook
-    const randomWebhook = discordWebhooks[Math.floor(Math.random() * discordWebhooks.length)];
-
-    // Generate random name
-    const randomName = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const randomId = Math.random().toString(36).substring(2, 15);
+    const fileName = `${randomId}_${file.name.replace(/\s/g, '-')}`;
     const fileExtension = file.name.split('.').pop() ?? '';
-    // Check if file extension is allowed (if allowedExtensions is provided)
+    const contentType = file.type;
+    const key = `${opts?.uploadPath ?? ''}/${fileName}`.startsWith('/')
+      ? `${opts?.uploadPath ?? ''}/${fileName}`.slice(1)
+      : `${opts?.uploadPath ?? ''}/${fileName}`;
+
     if (opts?.allowedExtensions) {
       if (!opts.allowedExtensions.includes(fileExtension)) throw new Error('Invalid file type');
     }
 
-    // Check if file size is too large
-    const maxFileSize = 1024 * 1024 * 25;
-    if (file.size > maxFileSize) throw new Error('File size too large, max 25MB');
+    const payload = {
+      email: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+      password: process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
+    };
 
-    // Upload file to discord
     const formData = new FormData();
-    formData.append('file', file, file.name ?? `${randomName}.${fileExtension}`);
-    const request = await axios.post(randomWebhook + '?wait=true', formData);
-    const response = request.data;
-    const url = response.attachments[0].url;
+    formData.append('file', file, fileName);
+    await axios.request({
+      method: 'put',
+      maxBodyLength: Infinity,
+      url: `https://r2.mbaharip.com/${key}`,
+      headers: {
+        'Authorization': `Basic ${btoa(JSON.stringify(payload))}`,
+        'Content-Type': contentType,
+      },
+      data: Buffer.from(await file.arrayBuffer()),
+      withCredentials: false,
+    });
 
-    // Return url
-    return url;
+    return `https://r2.mbaharip.com/${key}`;
   } catch (error: any) {
     throw new Error(error.message);
   }
+}
+
+export function getFileUploadKey(url: string) {
+  const removedDomain = url.replace('https://r2.mbaharip.com/', '');
+  const split = removedDomain.split('/');
+  const uploadPath = split.slice(0, split.length - 1).join('/');
+
+  return {
+    path: uploadPath,
+    fileName: split[split.length - 1],
+  };
 }

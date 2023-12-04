@@ -2,6 +2,10 @@ import { IconType } from '@icons-pack/react-simple-icons';
 import { icons } from 'lucide-react';
 
 export type State = 'idle' | 'loading' | 'disabled' | 'success' | 'error';
+export type HandlerState<T = unknown> = {
+  get: T;
+  set: React.Dispatch<React.SetStateAction<T>>;
+};
 
 export interface DataSocials {
   name: string;
@@ -31,14 +35,19 @@ export interface DataWorkspace {
   url?: string;
 }
 
-export interface APIResponse<T = undefined> {
+export type ApiResponseSuccess<T = undefined> = {
   message: string;
-  data?: T;
-  error?:
-    | string
-    | {
-        message: string;
-        details?: string;
-        hint?: string;
-      };
-}
+  data: Partial<T>;
+  pagination?: {
+    page: number;
+    itemsPerPage: number;
+    totalData: number;
+    totalPages: number;
+    isNextPage: boolean;
+    isPrevPage: boolean;
+  };
+};
+export type ApiResponseError = {
+  message: string;
+  error?: string;
+};

@@ -57,7 +57,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 
     is_featured: data.data.is_featured,
     views: data.data.views,
-    tags: data.data.tags,
+    stacks: data.data.tags,
     comments: data.data.comments,
   };
 

@@ -1,6 +1,6 @@
 import c from 'constant';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CreateBlog, createBlog, deleteBlogs, getBlogs } from 'supabase/controller/Blogs.server';
+import { CreateBlogPayload, createBlog, deleteBlogs, getBlogs } from 'supabase/controller/Blogs.server';
 
 import { DbRow } from 'types/Supabase';
 
@@ -15,6 +15,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
           typeof request.query['tags[]'] === 'string' ? [request.query['tags[]']] : request.query['tags[]'] || [];
         const qIds =
           typeof request.query['ids[]'] === 'string' ? [request.query['ids[]']] : request.query['ids[]'] || [];
+
         const blogsData = await getBlogs({
           ids: qIds || undefined,
           page: page ? Number(page) : undefined,
@@ -30,7 +31,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
         );
         return response.status(200).json(blogsData);
       case 'POST':
-        const newBlogPayload = request.body as CreateBlog;
+        const newBlogPayload = request.body as CreateBlogPayload;
         const newBlogData = await createBlog(request, newBlogPayload);
         return response.status(201).json(newBlogData);
       case 'DELETE':

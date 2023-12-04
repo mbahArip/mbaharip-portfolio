@@ -13,6 +13,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
       "constant": ["./src/constant"],
       "constant/*": ["./src/constant/*"],
@@ -24,6 +25,7 @@
       "styles/*": ["./src/styles/*"],
       "utils/*": ["./src/utils/*"],
       "types/*": ["./src/types/*"],
+      "mod/*": ["./src/modules/*"],
       "supabase/controller/*": ["./src/supabase/controller/*"],
       "supabase/helper": ["./src/supabase/helper"]
     }
